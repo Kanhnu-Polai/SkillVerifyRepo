@@ -13,7 +13,8 @@ public enum ErrorCodeEnum {
 	INVALID_PUBLIC_ID("USER_SERVICE_2004","Invalid public id"),
 	EMPTY_FILE_EXCEPTION("USER_SERVICE_2005","Empty file exception"),
 	EMAIL_MISSING_EXCEPTION("USER_SERVICE_2006","Email must not be null or empty"),
-	EMAIL_VERIFICATION_FAILED("USER_SERVICE_2007","Provided email not associated with our db"),;
+	EMAIL_VERIFICATION_FAILED("USER_SERVICE_2007","Provided email not associated with our db"),
+	USER_NOT_FOUND_EXCEPTION("USER_SERVICE_2008","User not present in db"),;
 	
 	
 	

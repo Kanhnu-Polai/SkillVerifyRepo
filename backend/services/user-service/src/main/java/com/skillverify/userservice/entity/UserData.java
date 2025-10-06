@@ -3,6 +3,7 @@ package com.skillverify.userservice.entity;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,6 +31,21 @@ public class UserData {
     private String photoUrl;
     private String role;
     private String resumeLink;
+    private String linkedinUrl;
+    private String githubUrl;
+    private String facebookUrl;
+    private String instagramUrl;
+    private String twitterUrl;
+    private String portfolioUrl;
+    private String youtubeUrl;
+    private String workExperience;
+   
+    @ElementCollection
+    private List<String> skills;
+    private int followersCount = 0;
+    private int postsCount = 0;
+    private int followingCount;
+    
     
     
     @Embedded

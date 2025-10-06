@@ -1,6 +1,10 @@
 package com.skillverify.userservice.controller;
 
+import com.skillverify.userservice.constant.ErrorCodeEnum;
+import com.skillverify.userservice.dto.SocialLinksDto;
 import com.skillverify.userservice.dto.UserDataDto;
+import com.skillverify.userservice.dto.UserSkillDto;
+import com.skillverify.userservice.exception.EmailMissingException;
 import com.skillverify.userservice.service.UserDataService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +21,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserDataController {
 
     private final UserDataService userDataService;
-
-    
-
     private final String className = this.getClass().getSimpleName();
 
    
@@ -34,6 +35,19 @@ public class UserDataController {
 
         log.info("{} || {} : User created successfully: {}", className, method, createdUser.getEmail());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+    }
+    
+    
+    @PutMapping("/social-links/update")
+    public ResponseEntity<SocialLinksDto> upadteUserSociaLinks(  @RequestBody SocialLinksDto socialLinksDto ){
+    	
+    	log.info("✅ UserDataController: upadteUserSociaLinks called with data: {}", socialLinksDto);
+    	if(socialLinksDto.getEmail() == null || socialLinksDto.getEmail().isEmpty()) {
+			throw new EmailMissingException(ErrorCodeEnum.EMAIL_MISSING_EXCEPTION);
+		}
+    	
+     SocialLinksDto linksDto = 	userDataService.updateUserSocialLinks(socialLinksDto);
+    	return ResponseEntity.ok().body(linksDto);
     }
 
    
@@ -50,10 +64,8 @@ public class UserDataController {
 
     
     @PutMapping("/update/{email}")
-    public ResponseEntity<UserDataDto> updateUser(
-            @PathVariable String email,
-            @Valid @RequestBody UserDataDto updateData) {
-        
+    public ResponseEntity<UserDataDto> updateUser( @PathVariable String email, @Valid @RequestBody UserDataDto updateData) {
+     log.info("✅ UserDataController: updateUser called with email: {}", email);
         String method = "updateUser";
         log.info("{} || {} : Updating user with email: {}", className, method, email);
 
@@ -62,6 +74,32 @@ public class UserDataController {
         log.info("{} || {} : User updated: {}", className, method, updatedUser.getEmail());
         return ResponseEntity.ok(updatedUser);
     }
+    
+    @PutMapping("/skills/add")
+    public ResponseEntity<UserSkillDto> addSkillsToUser(@RequestBody UserSkillDto userSkillDto ){ 
+    	log.info("✅ UserDataController: addSkillsToUser called with data: {}", userSkillDto);
+    	
+		if(userSkillDto.getEmail() == null || userSkillDto.getEmail().isEmpty()) {
+			throw new EmailMissingException(ErrorCodeEnum.EMAIL_MISSING_EXCEPTION);
+		}
+		
+	  UserSkillDto userSkillsDto = 	userDataService.addSkillsToUser(userSkillDto); 
+		
+	
+	  return ResponseEntity.ok().body(userSkillsDto);
+	}
+	
+	@DeleteMapping("/delete/{email}/{password}")
+	public ResponseEntity<String> deleteUser( @PathVariable String email, @PathVariable String password) {
+		String method = "deleteUser";
+		log.info("{} || {} : Deleting user with email: {}", className, method, email);
+
+		userDataService.deleteUserData(email, password);
+
+		log.info("{} || {} : User deleted: {}", className, method, email);
+		return ResponseEntity.ok("User deleted successfully");
+
+	}
     
     
     @GetMapping("/{id}")

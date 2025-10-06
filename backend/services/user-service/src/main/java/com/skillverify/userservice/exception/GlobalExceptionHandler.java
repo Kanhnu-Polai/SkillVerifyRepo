@@ -44,6 +44,7 @@ public class GlobalExceptionHandler {
 	}
 	
 	
+	@ExceptionHandler(EmailVerificationFailed.class)
 	public ResponseEntity<ErrorResponse> handleEmailVeificaionFailed(EmailVerificationFailed ex) {
 		ErrorResponse response = new ErrorResponse(
 				ErrorCodeEnum.EMAIL_VERIFICATION_FAILED.getCode(),
@@ -52,6 +53,15 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 	}
 	
+	
+	@ExceptionHandler(UserNotFoundException.class)
+	public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
+		ErrorResponse response = new ErrorResponse(
+				ErrorCodeEnum.USER_NOT_FOUND_EXCEPTION.getCode(),
+				ErrorCodeEnum.USER_NOT_FOUND_EXCEPTION.getMessage());
+		
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+	}
 	
 	
 	

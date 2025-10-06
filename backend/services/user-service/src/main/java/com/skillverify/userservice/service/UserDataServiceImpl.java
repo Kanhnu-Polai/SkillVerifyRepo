@@ -1,18 +1,20 @@
 package com.skillverify.userservice.service;
 
+import com.skillverify.userservice.constant.ErrorCodeEnum;
 import com.skillverify.userservice.dto.*;
 import com.skillverify.userservice.entity.*;
 import com.skillverify.userservice.exception.UserNotFoundException;
 import com.skillverify.userservice.repository.UserDataRepository;
-import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,7 +45,7 @@ public class UserDataServiceImpl implements UserDataService {
     @Transactional
     public UserDataDto updateUserData(String email, UserDataDto updateDto) {
         UserData existingUser = repository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
+                .orElseThrow(() -> new UserNotFoundException(ErrorCodeEnum.USER_NOT_FOUND_EXCEPTION));
 
         // Update simple fields
         existingUser.setFullName(updateDto.getFullName());
@@ -99,20 +101,20 @@ public class UserDataServiceImpl implements UserDataService {
         }
 
         UserData userData = repository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
+                .orElseThrow(() -> new UserNotFoundException(ErrorCodeEnum.USER_NOT_FOUND_EXCEPTION));
 
         repository.delete(userData);
     }
 
     @Override
-    @Transactional
+   @Transactional
     public UserDataDto getUserByEmail(String email) {
         if (email == null || email.trim().isEmpty()) {
             throw new IllegalArgumentException("Email cannot be null or empty");
         }
 
         UserData user = repository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
+                .orElseThrow(() -> new UserNotFoundException(ErrorCodeEnum.USER_NOT_FOUND_EXCEPTION));
 
         return convertToDto(user);
     }
@@ -153,8 +155,82 @@ public class UserDataServiceImpl implements UserDataService {
     public UserDataDto getUserById(Long id) {
         log.info("✅ UserDataServiceImpl: getUserById called with id: {}", id);
         UserData user = repository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
+                .orElseThrow(() -> new UserNotFoundException(ErrorCodeEnum.USER_NOT_FOUND_EXCEPTION));
         return convertToDto(user);
     }
 
+	@Override
+	@Transactional
+	public SocialLinksDto updateUserSocialLinks(SocialLinksDto socialLinksDto) {
+		log.info("✅ UserDataServiceImpl: updateUserSocialLinks called with data: {}", socialLinksDto);
+		
+		UserData existingUser = repository.findByEmail(socialLinksDto.getEmail())
+				.orElseThrow(()->new UserNotFoundException(ErrorCodeEnum.USER_NOT_FOUND_EXCEPTION));
+		
+		updateIfNotNull(existingUser::setLinkedinUrl, socialLinksDto.getLinkedinUrl());
+		updateIfNotNull(existingUser::setGithubUrl, socialLinksDto.getGithubUrl());
+		updateIfNotNull(existingUser::setTwitterUrl, socialLinksDto.getTwitterUrl());
+		updateIfNotNull(existingUser::setPortfolioUrl, socialLinksDto.getPortfolioUrl());
+		updateIfNotNull(existingUser::setFacebookUrl, socialLinksDto.getFacebookUrl());
+		updateIfNotNull(existingUser::setInstagramUrl, socialLinksDto.getInstagramUrl());
+		updateIfNotNull(existingUser::setYoutubeUrl, socialLinksDto.getYoutubeUrl());
+		repository.save(existingUser);
+		log.info("✅ UserDataServiceImpl: Social links updated for user: {}", existingUser.getEmail());
+		SocialLinksDto linksDto = SocialLinksDto.builder()
+				.email(existingUser.getEmail())
+				.linkedinUrl(existingUser.getLinkedinUrl())
+				.githubUrl(existingUser.getGithubUrl())
+				.twitterUrl(existingUser.getTwitterUrl())
+				.portfolioUrl(existingUser.getPortfolioUrl())
+				.facebookUrl(existingUser.getFacebookUrl())
+				.instagramUrl(existingUser.getInstagramUrl())
+				.youtubeUrl(existingUser.getYoutubeUrl())
+				.build();
+		
+		log.info("✅ UserDataServiceImpl: Returning updated SocialLinksDto: {}", linksDto);
+		
+		
+		return linksDto;
+	}
+	
+
+	@Override
+	public UserSkillDto addSkillsToUser(UserSkillDto userSkillDto) {
+		log.info("✅ UserDataServiceImpl: addSkillsToUser called with data: {}", userSkillDto);
+		UserData existingUser = repository.findByEmail(userSkillDto.getEmail())
+				.orElseThrow(()->new UserNotFoundException(ErrorCodeEnum.USER_NOT_FOUND_EXCEPTION));
+		updateIfNotNull(existingUser::setSkills, userSkillDto.getSkills());
+		repository.save(existingUser);
+		log.info("✅ UserDataServiceImpl: Skills updated for user: {}", existingUser.getEmail());
+		UserSkillDto skillDto = UserSkillDto.builder()
+				.email(existingUser.getEmail())
+				.skills(existingUser.getSkills())
+				.build();
+		
+		
+		return skillDto;
+	}
+
+	
+	
+	
+	private <T> void updateIfNotNull(Consumer<T> setter, T value) {
+	    if (value != null) {
+	        setter.accept(value);
+	    }
+	}
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

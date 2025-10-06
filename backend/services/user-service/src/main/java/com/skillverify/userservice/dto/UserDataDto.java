@@ -20,6 +20,11 @@ public class UserDataDto {
     private String photoUrl;
     private String role;
     private String resumeLink;
+    private String linkedinUrl;
+    private String githubUrl;
+    private String workExperience;
+    private List<String> skills;
+    
 
     private AddressDto address;
 
