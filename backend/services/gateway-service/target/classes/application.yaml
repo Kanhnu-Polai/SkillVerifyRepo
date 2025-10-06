@@ -1,0 +1,22 @@
+server:
+  port: 9090
+
+spring:
+  application:
+    name: gateway-service
+
+  cloud:
+    gateway:
+      routes:
+        - id: auth-service
+          uri: http://localhost:8080
+          predicates:
+            - Path=/serviceA/**
+          filters:
+            - StripPrefix=1   # removes /serviceA before forwarding
+        - id: microservice2
+          uri: http://localhost:8082
+          predicates:
+            - Path=/serviceB/**
+          filters:
+            - StripPrefix=1
