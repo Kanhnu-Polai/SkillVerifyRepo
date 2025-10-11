@@ -82,5 +82,13 @@ public class PostController {
 		Post responseEntity = postService.updateCommentCount(postId);
 		return ResponseEntity.status(HttpStatus.OK).body(responseEntity);
 	}
+	
+	@GetMapping("/user-posts")
+	public ResponseEntity<List<Post>> getPostDetailsForSPecificUser(@RequestParam Long userId) {
+		log.info("✅ PostController ----> getPostDetailsForSPecificUser() endpoint called with User ID: {}", userId);
+		
+		List<Post> posts = postService.getCurrentUserPosts(userId);
+		return ResponseEntity.status(HttpStatus.OK).body(posts);
+	}
 
 }

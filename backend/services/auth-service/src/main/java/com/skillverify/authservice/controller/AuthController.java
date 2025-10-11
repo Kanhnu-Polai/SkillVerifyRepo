@@ -15,11 +15,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import com.skillverify.authservice.dto.AuthResponseDto;
+import com.skillverify.authservice.dto.AuthUpdateDto;
 import com.skillverify.authservice.dto.LoginRequestDto;
 import com.skillverify.authservice.dto.SignUpRequestDto;
+import com.skillverify.authservice.dto.ValidateDto;
 import com.skillverify.authservice.entity.User;
 import com.skillverify.authservice.errorcodeenum.ErrorCodeEnum;
 import com.skillverify.authservice.exception.AuthenticationFailureException;
+import com.skillverify.authservice.exception.InvalidCredentialsException;
 import com.skillverify.authservice.exception.TokenExpireException;
 import com.skillverify.authservice.exception.TokenNullException;
 import com.skillverify.authservice.exception.UserAlreadyExistsException;
@@ -27,6 +30,7 @@ import com.skillverify.authservice.httpengine.NotificationEngine;
 import com.skillverify.authservice.httpengine.UserServiceEngine;
 import com.skillverify.authservice.repository.UserRepository;
 import com.skillverify.authservice.security.jwtutils.JwtUtils;
+import com.skillverify.authservice.service.UserDetailsServiceImpl;
 import com.skillverify.authservice.utils.Role;
 
 import jakarta.validation.Valid;
@@ -40,6 +44,9 @@ public class AuthController {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private UserDetailsServiceImpl userDetailsServiceImpl;
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -204,6 +211,47 @@ public class AuthController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body(Map.of("error", "Token validation failed"));
 		}
+	}
+	
+	
+	@PostMapping("/validate-password")
+	public ResponseEntity<Map<String, Object>> validatePasswordForEmail(@Valid @RequestBody ValidateDto validateDto) {
+		log.info("✅ Password validation request received for email: {}",validateDto.getEmail());
+		if(validateDto.getEmail()==null || validateDto.getPassword()==null) {
+			log.warn("Email or password is null in validate-password request");
+			throw new InvalidCredentialsException(ErrorCodeEnum.INVALID_CREDENTIALS);
+		}
+		
+		User user  = userRepository.findByEmail(validateDto.getEmail())
+				.orElseThrow(()-> new InvalidCredentialsException(ErrorCodeEnum.INVALID_CREDENTIALS));
+		
+		boolean valid = passwordEncoder.matches(validateDto.getPassword(), user.getPassword());
+		Map<String, Object> response = new HashMap<>();
+		response.put("email", validateDto.getEmail());
+		response.put("valid", valid);
+		log.info("✅ Password validation completed for email: {}, valid: {}", validateDto.getEmail(), valid);
+		
+		return ResponseEntity.ok(response);
+		
+				
+		
+		
+		
+		
+	}
+	
+	
+	@PutMapping("/update-email")
+	public ResponseEntity<String> updateAuthEmail(@RequestBody AuthUpdateDto authUpdateDto) {
+		log.info("✅ Email Update request received for email: {}",authUpdateDto.getOldEmail());
+		
+		if(authUpdateDto.getOldEmail()==null || authUpdateDto.getNewEmail()==null) {
+			log.warn("Old email or new email is null in update-email request");
+			throw new InvalidCredentialsException(ErrorCodeEnum.INVALID_CREDENTIALS);
+		}
+		
+		String response = userDetailsServiceImpl.updateUserEmai(authUpdateDto);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	

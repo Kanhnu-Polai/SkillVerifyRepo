@@ -9,7 +9,7 @@ public class AppConfig {
 	
 	
 	@Bean
-	public RestClient restClient() {
+	 RestClient restClient() {
 		return RestClient.create();
 	}
 

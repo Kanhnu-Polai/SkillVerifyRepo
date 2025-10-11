@@ -77,6 +77,17 @@ public class GobalExceptionHandler {
         );
     }
     
+    @ExceptionHandler(EmailOrPasswordException.class)
+    public ResponseEntity<ErrorResponse> handleEmailOrPasswordException(EmailOrPasswordException ex){
+		
+		ErrorResponse response = new ErrorResponse(
+				ErrorCodeEnum.EMAIL_OR_PASSWORD_NULL.getCode(),
+				ErrorCodeEnum.EMAIL_OR_PASSWORD_NULL.getMessage());
+		
+		
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+	}
+    
     
     @ExceptionHandler(TokenNullException.class)
     public ResponseEntity<ErrorResponse> handleTokenNullException(TokenNullException ex){

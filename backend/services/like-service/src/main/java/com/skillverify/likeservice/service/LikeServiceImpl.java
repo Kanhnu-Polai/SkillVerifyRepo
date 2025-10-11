@@ -1,6 +1,8 @@
 package com.skillverify.likeservice.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -67,6 +69,15 @@ public class LikeServiceImpl implements LikeService {
 	        log.error("❌ Error updating like: {}", e.getMessage(), e);
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	    }
+	}
+
+	@Override
+	public List<UUID> getAllLikedPostId(Long userId) {
+		log.info("✅ LikeServiceImpl: getAllPostId called with userId : {}", userId);
+		List<UUID> likedPostIds = likeRepository.findLikedPostIdsByUserId(userId);
+		
+				
+		return likedPostIds;
 	}
 
 }

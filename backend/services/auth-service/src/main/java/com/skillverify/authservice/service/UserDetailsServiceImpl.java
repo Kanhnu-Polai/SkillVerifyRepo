@@ -3,6 +3,7 @@ package com.skillverify.authservice.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,13 +13,17 @@ import org.springframework.stereotype.Service;
 
 import com.skillverify.authservice.dto.AdminAddReqDto;
 import com.skillverify.authservice.dto.AdminResponseDto;
+import com.skillverify.authservice.dto.AuthUpdateDto;
 import com.skillverify.authservice.entity.User;
 import com.skillverify.authservice.errorcodeenum.ErrorCodeEnum;
 import com.skillverify.authservice.exception.UserAlreadyExistsException;
 import com.skillverify.authservice.exception.UserNotFoundException;
 import com.skillverify.authservice.repository.UserRepository;
 import com.skillverify.authservice.utils.Role;
+
+import lombok.extern.slf4j.Slf4j;
 @Service
+@Slf4j
 public class UserDetailsServiceImpl implements UserDetailsService {
 	@Autowired
 	private UserRepository userRepository;
@@ -53,4 +58,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	    response.setMessage("Admin registered successfully");
 	    response.setEmail(user.getEmail());
 	    return response;
-	}}
+	}
+	
+	
+	public String updateUserEmai(AuthUpdateDto authUpdateDto) {
+	   log.info("Updating email from {} to {}", authUpdateDto.getOldEmail(), authUpdateDto.getNewEmail());
+		User user = userRepository.findByEmail(authUpdateDto.getOldEmail())
+	            .orElseThrow(() -> new UserNotFoundException(ErrorCodeEnum.USER_NOT_FOUND));
+
+	    user.setEmail(authUpdateDto.getNewEmail());
+	    userRepository.save(user);
+	    return "Email updated successfully";
+	}
+	
+
+}

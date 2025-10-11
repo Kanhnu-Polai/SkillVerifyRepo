@@ -57,6 +57,10 @@ public class ModelMapperConfig {
         if (modelMapper.getTypeMap(EducationDto.class, Education.class) == null) {
             modelMapper.createTypeMap(EducationDto.class, Education.class);
         }
+        
+        if(modelMapper.getTypeMap(ExperienceDto.class, Experience.class)==null) {
+			modelMapper.createTypeMap(ExperienceDto.class, Experience.class);
+        }
 
         if (modelMapper.getTypeMap(Education.class, EducationDto.class) == null) {
             modelMapper.createTypeMap(Education.class, EducationDto.class);

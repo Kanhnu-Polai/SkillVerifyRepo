@@ -22,7 +22,17 @@ public class UserDataDto {
     private String resumeLink;
     private String linkedinUrl;
     private String githubUrl;
-    private String workExperience;
+    private List<ExperienceDto> workExperience;
+    private String facebookUrl;
+    private String instagramUrl;
+    private String twitterUrl;
+    private String portfolioUrl;
+    private String youtubeUrl;
+    private int followersCount;
+    private int postsCount;
+    private int followingCount;
+    private int profileView;
+    
     private List<String> skills;
     
 

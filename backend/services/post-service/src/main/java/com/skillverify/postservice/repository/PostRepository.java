@@ -16,6 +16,9 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
 		       "WHERE p.createdAt >= :since " +
 		       "ORDER BY (p.likeCount + p.shareCount + p.commentCount) DESC")
 		List<Post> findTrendingPosts(@Param("since") LocalDateTime since);
+	
+	
+	List<Post> findByUserIdOrderByCreatedAtDesc(Long userId);
 
 
 }

@@ -63,6 +63,15 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 	}
 	
+	@ExceptionHandler(UserIdNotProvidedException.class)
+	public ResponseEntity<ErrorResponse> handleUserIdNotProvidedException(UserIdNotProvidedException ex) {
+		ErrorResponse response = new ErrorResponse(
+				ErrorCodeEnum.USER_ID_NOT_PROVIDED_EXCEPTION.getCode(),
+				ErrorCodeEnum.USER_ID_NOT_PROVIDED_EXCEPTION.getMessage());
+		
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+	}
+	
 	
 	
 

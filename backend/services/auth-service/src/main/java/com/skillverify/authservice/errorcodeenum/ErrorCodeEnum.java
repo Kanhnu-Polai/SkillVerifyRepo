@@ -11,7 +11,8 @@ public enum ErrorCodeEnum {
     USER_NOT_FOUND("AUTH_SERVICE_1002", "User not found"),
     AUTHENTICATION_FAILURE("AUTH_SERVICE_1003", "Authentication failed"),
     TOKEN_EXPIRED("AUTH_SERVICE_1004","Token is invalid or expired"),
-    NULL_TOKEN("AUTH_SERVICE_1005","Token is NULL");
+    NULL_TOKEN("AUTH_SERVICE_1005","Token is NULL"),
+    EMAIL_OR_PASSWORD_NULL("AUTH_SERVICE_1006","Email or Password is NULL");
 	
 	
 

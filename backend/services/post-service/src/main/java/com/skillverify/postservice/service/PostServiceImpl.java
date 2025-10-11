@@ -11,6 +11,7 @@ import com.skillverify.postservice.contant.ErrorCodeEnum;
 import com.skillverify.postservice.dto.PostCreationDto;
 import com.skillverify.postservice.entity.Post;
 import com.skillverify.postservice.exception.PostNotFoundException;
+import com.skillverify.postservice.http.HttpServiceEngine;
 import com.skillverify.postservice.repository.PostRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PostServiceImpl implements PostService {
 	
 	private final PostRepository repository;
+	private final HttpServiceEngine httpServiceEngine;
 
 	@Override
 	public Post createPost(PostCreationDto postCreationDto) {
@@ -51,8 +53,13 @@ public class PostServiceImpl implements PostService {
 		log.info("✅ Post entity constructed: {}", post);
 		post=  repository.save(post);
 		
+		
+		
 		if(post != null) {
 			log.info("✅ Post saved successfully with ID: {}", post.getPostId());
+			// make api call  to the user Service to increase the post count..
+			httpServiceEngine.callToUserServiceToUpdatePostCount(postCreationDto.getUserId());
+			
 		} else {
 			log.error("❌ Failed to save post for userId: {}", postCreationDto.getUserId());
 		}
@@ -113,6 +120,20 @@ public class PostServiceImpl implements PostService {
 		 Post updatedPost = repository.save(post);
 		 return updatedPost;
 		
+	}
+
+	@Override
+	public List<Post> getCurrentUserPosts(Long userId) {
+		log.info("✅ PostServiceImpl---->getCurrentUserPostStaus() called for userId: {}", userId);
+		List<Post> userPosts = repository.findByUserIdOrderByCreatedAtDesc(userId);
+		if(userPosts == null || userPosts.isEmpty()) {
+			log.warn("⚠️ No posts found for userId: {}", userId);
+			throw new PostNotFoundException(ErrorCodeEnum.POST_NOT_FOUND);
+		}
+		
+		
+		
+		return userPosts;
 	}
 
 }
