@@ -9,7 +9,7 @@ const SearchBar = ({ placeholder = "Search for jobs............", onSubmit }) =>
 
   return (
     <form onSubmit={handleSubmit} className="w-full flex justify-center px-4">
-      <div className="relative w-full sm:w-[300px] md:w-[600px] lg:w-[700px]">
+      <div className="relative w-full sm:w-[300px] md:w-[500px] lg:w-[600px]">
         <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
           <svg
             className="w-4 h-4 text-gray-500 dark:text-gray-400"

@@ -139,5 +139,26 @@ export async function getAllCommentsById(postId) {
     throw error;
   }
 }
+
+export async function getAllPostIdsLikedByUser(userId){
+
+  try {
+    const res = await axios.get(`${LIKE_BASE_URL}/get-post-id`,{
+      params:{
+        userId:userId
+      }
+    })
+
+    console.log(res.data)
+    return res.data;
+    
+  } catch (error) {
+
+    console.log("❌ Error in fetching post ids...", error.response?.data || error.message)
+    throw error
+    
+  }
+
+}
   
 

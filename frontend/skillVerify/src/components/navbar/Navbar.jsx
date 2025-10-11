@@ -47,7 +47,7 @@ const Navbar = () => {
                   SkillVerify
                 </span>
                 <sup className="text-[6px] md:text-[10px] text-orange-500 font-semibold animate-pulse">
-                  Under Dev
+                  Beta
                 </sup>
               </NavLink>
               <p className="text-[8px] md:text-xs text-gray-500 tracking-wider">

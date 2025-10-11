@@ -33,7 +33,7 @@ const ProfilePage = () => {
       case "JOB_SEEKER":
         return (
           <>
-           <div className="border-4">
+           <div >
             
              <JobSeekerNav />
 
