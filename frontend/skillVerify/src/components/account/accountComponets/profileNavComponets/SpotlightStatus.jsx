@@ -8,6 +8,7 @@ import {
 } from "react-icons/fa";
 import ViewPosts from "./ViewPosts";
 
+
 const SpotlightStatus = ({ views, postsCount }) => {
   const [openPost, setOpenPost] = useState(false);
 
@@ -93,27 +94,13 @@ const SpotlightStatus = ({ views, postsCount }) => {
             {data.qualifiedExams}
           </p>
         </div>
+       
       </div>
 
       {/* Example: you can conditionally render your modal here */}
       {
         openPost && <ViewPosts onClose={setOpenPost}/>
-        // <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-        //   <div className="bg-white rounded-lg p-5 w-[90%] max-w-md">
-        //     <h3 className="text-lg font-semibold mb-3 text-cyan-700">
-        //       Profile Views Details
-        //     </h3>
-        //     <p className="text-gray-600">
-        //       You have {data.profileViews} profile views!
-        //     </p>
-        //     <button
-        //       onClick={() => setOpenViewModal(false)}
-        //       className="mt-4 bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition"
-        //     >
-        //       Close
-        //     </button>
-        //   </div>
-        // </div>
+        
       }
     </div>
   );

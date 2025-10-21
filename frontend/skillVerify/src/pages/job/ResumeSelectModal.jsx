@@ -57,7 +57,7 @@ export default function ResumeSelectModal({ job = {}, onClose, onSuccess }) {
         {error && <p className="text-red-600 text-sm mb-2">{error}</p>}
 
         {resumes.length === 0 ? (
-          <p className="text-sm text-gray-600">You haven’t uploaded any résumés yet.</p>
+          <p className="text-sm text-gray-600">You haven’t uploaded any resumes yet.</p>
         ) : (
           <ul className="space-y-3">
             {resumes.map((r, idx) => (

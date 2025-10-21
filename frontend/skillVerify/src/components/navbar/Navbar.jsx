@@ -35,8 +35,8 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white shadow-md sticky top-0 z-30">
-      <div className="w-full ">
+    <nav className="bg-white shadow-xl sticky top-0 z-30 ">
+      <div className="w-full">
         <div className="flex justify-between mx-2 text-[15px] md:mx-4  items-center h-18 py-2">
           {/* Logo */}
           <div className="flex items-center gap-2">
@@ -179,7 +179,11 @@ const Navbar = () => {
             >
               Jobs
             </NavLink>
-            <NavLink to="/spotlight" className={navLinkClass}>
+            <NavLink 
+            to="/spotlight"
+             className={navLinkClass}
+              onClick={() => setMobileMenuOpen(false)}
+            >
   Spotlight
   <span className="text-[8px] text-pink-500 font-semibold align-super ml-1">
     Community

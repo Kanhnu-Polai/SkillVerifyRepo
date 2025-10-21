@@ -1,6 +1,9 @@
 import React from 'react';
 import { FaFacebookF, FaLinkedinIn, FaGithub, FaEnvelope } from 'react-icons/fa';
 import { FaXTwitter } from "react-icons/fa6";
+import { MdDeveloperMode } from "react-icons/md";
+import { FaCode, FaLaptopCode } from "react-icons/fa";
+
 
 const Footer = () => {
   return (
@@ -72,12 +75,13 @@ const Footer = () => {
       </div>
 
       {/* Divider */}
-      <div className="border-t border-gray-600 my-6"></div>
+      <div className="border-t border-gray-600 my-6 "></div>
 
       {/* Footer Bottom */}
       <div className="text-center text-gray-500 text-xs">
         © {new Date().getFullYear()} <span className="text-cyan-400 font-semibold">SkillVerify</span>. All rights reserved.
       </div>
+      
     </footer>
   );
 };

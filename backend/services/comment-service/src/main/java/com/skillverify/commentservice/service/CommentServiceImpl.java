@@ -52,7 +52,9 @@ public class CommentServiceImpl implements CommentService {
 
 	@Override
 	public List<Comment> getCommentsByPostId(UUID postId) {
+		log.info("✅ CommentServiceImpl: getCommentsByPostId called for Post ID : {}", postId);
 		List<Comment> comments = repository.findByPostId(postId);
+		log.info("✅ CommentServiceImpl: getCommentsByPostId found Comments : {}", comments.size());
 		return comments;
 	}
 

@@ -38,7 +38,7 @@ export default function PublicJobCard({
   const postedAgo = timeAgo(createdAt);
 
   return (
-    <article className="bg-slate-100 border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-300 w-full max-w-3xl ">
+    <article className="bg-slate-300 border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-300 w-full max-w-3xl ">
       {/* top grid */}
      {examRequired && <div className=" flex justify-end mb-1">
       <span className="md:px-3 px-1.5 py-1 md:py-1 text-[6px] md:text-[8px] font-semibold rounded-[12px] bg-yellow-100 text-yellow-800 border border-yellow-400 shadow-sm">

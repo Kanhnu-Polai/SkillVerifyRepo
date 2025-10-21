@@ -29,7 +29,7 @@ const Applications = () => {
   }, []);
 
   return (
-    <div className=' md:w-[1000px] w-fit '>
+    <div className=' md:w-2xl w-full  '>
       
 
       {loading ? (

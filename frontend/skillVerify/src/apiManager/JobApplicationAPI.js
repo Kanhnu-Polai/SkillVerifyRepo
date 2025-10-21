@@ -27,6 +27,7 @@ jobApplications.interceptors.response.use(
 
 export async function getApplications(email){
     const res = await jobApplications.get(`applications/${email}`)
+    console.log(res)
     return res.data;
 }
 

@@ -8,7 +8,7 @@ const JobSeekerNav = () => {
 
   return (
     <>
-     <nav className="sticky top-0 z-10 bg-white shadow-sm">
+     <nav className="sticky top-0 z-10 bg-white shadow-sm w-full">
       <div className="flex text-[13px] md:text-base overflow-x-auto scrollbar-hide px-4 py-2 space-x-2 w-screen">
 
 

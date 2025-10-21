@@ -40,7 +40,7 @@ const ApplicationCard = ({
   { name: "Shortlisted", status: "pending" },
 ]
   return (
-    <div className="bg-white w-full shadow border-2  rounded-[16px] p-4 sm:p-6 sm:my-6 m-3 ">
+    <div className="bg-white w-fit  shadow border-2  rounded-[16px] p-4 sm:p-6 sm:my-6 m-3 ">
       {/* Header Row */}
       <div className="flex items-center justify-between border-b pb-4 mb-4">
         <div className="flex items-center gap-3">

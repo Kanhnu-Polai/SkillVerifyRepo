@@ -13,6 +13,7 @@ import org.springframework.web.client.RestClient;
 import com.skillverify.applicationservice.dto.ApplicationDto;
 import com.skillverify.applicationservice.dto.FetchedJobDto;
 import com.skillverify.applicationservice.dto.JobApplyDto;
+import com.skillverify.applicationservice.dto.JobManagerAckDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -61,18 +62,28 @@ public class JobServiceEngine {
 	            .retrieve()
 	            .toEntity(new ParameterizedTypeReference<List<FetchedJobDto>>() {}); 
 
-//	    List<FetchedJobDto> jobs = response.getBody();
-//
-//	    log.info("Jobs List: {}", jobs);
-//	    log.info("[JobServiceEngine] job-service returned {} jobs",
-//	             jobs != null ? jobs.size() : 0);
-//	   
-//
-//	    return jobs != null ?
-//	            ResponseEntity.ok(jobs) :
-//	            ResponseEntity.status(404).body(List.of()); // return empty list if no jobs
 	    return response;
 	}
+	
+	
+	
+	public ResponseEntity<String> makeCallToJobManagerServiceToAddApplication(JobManagerAckDto jobApplyDto) {
+		log.info("📡 Making call to job manager service to add application for jobId: {} and application Id {}", jobApplyDto.getJobId(),jobApplyDto.getApplicationId() );
+
+
+	    ResponseEntity<String> response = restClient
+	            .post()
+	            .uri("http://127.0.0.1:5000/application")
+	            .contentType(MediaType.APPLICATION_JSON)
+	            .body(jobApplyDto)
+	            .retrieve()
+	            .toEntity(String.class);
+
+	    log.info("✅ Response from job manager service for applicationId {}: {}", jobApplyDto.getApplicationId(), response.getBody());
+	    return response;
+	}
+	
+	
 	
 	
 	

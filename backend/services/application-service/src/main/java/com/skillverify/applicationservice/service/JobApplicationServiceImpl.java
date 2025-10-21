@@ -16,6 +16,8 @@ import com.skillverify.applicationservice.dto.ApplicationDto;
 import com.skillverify.applicationservice.dto.FetchedJobDto;
 import com.skillverify.applicationservice.dto.JobApplyDto;
 import com.skillverify.applicationservice.dto.JobApplyResponseDto;
+import com.skillverify.applicationservice.dto.JobManagerAckDto;
+import com.skillverify.applicationservice.dto.JobManagerAckDto.JobManagerAckDtoBuilder;
 import com.skillverify.applicationservice.entity.JobApplication;
 import com.skillverify.applicationservice.http.JobServiceEngine;
 import com.skillverify.applicationservice.http.NotificationEngine;
@@ -45,28 +47,58 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 		}
 
 		// 2) Create new
-		JobApplication newApp = JobApplication.builder().jobId(dto.getJobId()).jobTitle(dto.getJobTitle()) // make sure
-																											// it's
-																											// present
-				.email(dto.getJobSeekerEmail()).resumeUrl(dto.getResumeUrl()).status(JobStatus.CREATED)
+		JobApplication newApp = JobApplication.builder()
+				.jobId(dto.getJobId())
+				.jobTitle(dto.getJobTitle())																							
+				.email(dto.getJobSeekerEmail())
+				.resumeUrl(dto.getResumeUrl())
+				.status(JobStatus.CREATED)
 				.appliedAt(LocalDateTime.now()).build();
 
 		jobApplicationRepository.save(newApp);
 		log.info("Created application {}", newApp.getId());
 
 		// 3) Notify other services
-//	    jobServiceEngine.updateCandidateCount(newApp.getJobId());   // renamed
-//	    notificationEngine.makeCallToNotificationService(
-//	            dto.getJobSeekerEmail(),
-//	            "Job Application Confirmation",
-//	            String.format("You applied for %s. Current status: %s",
-//	                    newApp.getJobTitle(), newApp.getStatus())
-//	    );
-
-		// 4) Return DTO
+	    jobServiceEngine.updateCandidateCount(newApp.getJobId()); 
+	    
+	    
+	    JobManagerAckDto ackDto = JobManagerAckDto.builder()
+	    		.jobId(dto.getJobId())
+	    		.applicationId(newApp.getApplicationId())
+	    		.applicantEmail(dto.getJobSeekerEmail())
+	    		.status(JobStatus.CREATED)
+	    		.resumeUrl(dto.getResumeUrl())
+	    		.build();
+	    
+	    jobServiceEngine.makeCallToJobManagerServiceToAddApplication(ackDto);
+	    
 		return JobApplyResponseDto.builder().jobTitle(newApp.getJobTitle()).status(newApp.getStatus())
 				.appliedAt(newApp.getAppliedAt()).build();
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	@Override
 	public ResponseEntity<List<FetchedJobDto>> getJobApplicationIdByEmail(String email) {
