@@ -28,7 +28,7 @@ public class ApplicationController {
 	
 	@PostMapping("/apply")
 	public ResponseEntity<JobApplyResponseDto>  applyJob(@RequestBody JobApplyDto jobApplyDto) {
-		log.info("Received job application: {}", jobApplyDto);
+		log.info("✅ Received job application: {}", jobApplyDto);
 		
 		if (jobApplyDto.getJobSeekerEmail() == null || jobApplyDto.getResumeUrl() == null || jobApplyDto.getJobId() == null) {
 			log.error("Invalid application data: {}", jobApplyDto);
@@ -37,8 +37,9 @@ public class ApplicationController {
 		
 		try {
 			JobApplyResponseDto responseDto 	=	jobApplicationService.applyForJob(jobApplyDto);
-			log.info("Job application processed successfully for email: {}", jobApplyDto.getJobSeekerEmail());
+			log.info("✅ Job application processed successfully for email: {}", jobApplyDto.getJobSeekerEmail());
 			return ResponseEntity.ok(responseDto);
+			
 		} catch (Exception e) {
 			log.error("Error applying for job: {}", e.getMessage());
 			return ResponseEntity.status(500).body(null);

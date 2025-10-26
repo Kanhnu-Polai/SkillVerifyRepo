@@ -53,7 +53,7 @@ const ProfileNav = () => {
               onPhotoChange={handlePhotoChange}
               role={userData?.role}
             />
-             <SpotlightStatus views={userData.profileView} postsCount = {userData.postsCount} />
+             <SpotlightStatus views={userData.profileView} postsCount = {userData.postsCount} role = {userData.role} />
             {error && <p className="text-red-500 text-xs">{error}</p>}
             <ContactInfo userData={userData}></ContactInfo>
             <AddSocialMediaProfile userData ={userData} /> 

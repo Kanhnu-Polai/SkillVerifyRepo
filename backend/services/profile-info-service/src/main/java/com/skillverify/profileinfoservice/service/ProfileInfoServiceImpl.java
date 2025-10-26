@@ -58,7 +58,9 @@ public class ProfileInfoServiceImpl implements ProfileInfoService {
 		// Fetch the profile info for the given userId
 		ProfileInfo profileInfo = profileInfoRepository.findByUserId(userId);
 		
-	 	httpServiceEngine.callToUserServiceToUpdateProfileView(userId);
+		
+		ResponseEntity<String> data =   	httpServiceEngine.callToUserServiceToUpdateProfileView(userId);
+		log.info("Response from User Service: {}", data.getBody());
 		
 		if (profileInfo == null) {
 	        throw new RuntimeException("Profile not found for userId: " + userId);

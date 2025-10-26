@@ -1,9 +1,11 @@
 package com.skillverify.profileinfoservice.http;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Component
@@ -11,6 +13,10 @@ import lombok.extern.slf4j.Slf4j;
 public class HttpServiceEngine {
 
     private final RestClient restClient;
+
+    // ✅ Injecting the base URL from application.properties
+    @Value("${user.service.base-url}")
+    private String userServiceBaseUrl;
 
     public HttpServiceEngine(RestClient restClient) {
         this.restClient = restClient;
@@ -25,8 +31,8 @@ public class HttpServiceEngine {
         log.info("➡️ Calling User Service to update profile view for userId: {}", userId);
 
         try {
-            // You can later replace this URL with service discovery (Eureka) or API Gateway endpoint
-            String url = String.format("http://localhost:8083/api/users/update-profile-view?userId=%d", userId);
+            // ✅ Build URL using property value
+            String url = String.format("%s/api/users/update-profile-view?userId=%d", userServiceBaseUrl, userId);
 
             ResponseEntity<String> response = restClient
                     .post()

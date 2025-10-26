@@ -18,7 +18,7 @@ public class HttpServiceEngine {
     private final RestClient restClient;
 
     @Value("${post.service.base-url}")
-    private String postServiceUrl; // ❌ removed final
+    private String postServiceUrl; 
 
     public String callPostService(UUID postId) {
         log.info("✅ HttpServiceEngine: callPostService called for Post ID : {}", postId);

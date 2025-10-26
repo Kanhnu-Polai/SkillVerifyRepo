@@ -36,8 +36,8 @@ public class ProfileInfoController {
 	 
  }
 
-@PostMapping("/add-profile")
-public ResponseEntity<ProfileInfo> addProfile(@RequestParam Long userId) {
+    @PostMapping("/add-profile")
+    public ResponseEntity<ProfileInfo> addProfile(@RequestParam Long userId) {
 	 log.info("Inside addProfile of ProfileInfoController");
 	 
 	 if(userId == null) {

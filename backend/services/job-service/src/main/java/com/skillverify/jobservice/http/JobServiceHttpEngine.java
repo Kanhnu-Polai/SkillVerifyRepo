@@ -19,7 +19,7 @@ public class JobServiceHttpEngine {
     private final RestClient restClient;
 
     // externalize URL to application.properties
-    @Value("${job-manager-service.url:http://127.0.0.1:5000/add_job}")
+    @Value("${job-manager-service.url=http://job-manager-service:5000/add_job}")
     private String jobManagerUrl;
 
     public JobServiceHttpEngine(RestClient restClient) {

@@ -7,10 +7,14 @@ import {
   FaCheckCircle,
 } from "react-icons/fa";
 import ViewPosts from "./ViewPosts";
+import { Briefcase } from "lucide-react";
+import { BadgeCheck } from "lucide-react";
 
 
-const SpotlightStatus = ({ views, postsCount }) => {
+const SpotlightStatus = ({ views, postsCount,role }) => {
+  console.log(role)
   const [openPost, setOpenPost] = useState(false);
+  console.log(postsCount)
 
   const data = {
     posts: postsCount,
@@ -67,7 +71,19 @@ const SpotlightStatus = ({ views, postsCount }) => {
           </p>
         </div>
 
-        {/* 📋 Exams Appeared */}
+        {  role === "JOB_POSTER"?
+        <div
+          onClick={() => console.log("Exams Appeared clicked")}
+          className="bg-cyan-800/40 rounded-xl px-4 py-3 flex flex-col items-center justify-center shadow-sm hover:shadow-md hover:bg-cyan-800/60 transition-all duration-300 cursor-pointer"
+        >
+          <Briefcase className="mb-2 text-2xl text-sky-300" />
+          <p className="text-gray-200 text-xs font-medium text-center">
+            Listed Jobs
+          </p>
+          <p className="text-white text-lg font-semibold mt-1">
+            {data.examsAppeared}
+          </p>
+        </div>:
         <div
           onClick={() => console.log("Exams Appeared clicked")}
           className="bg-cyan-800/40 rounded-xl px-4 py-3 flex flex-col items-center justify-center shadow-sm hover:shadow-md hover:bg-cyan-800/60 transition-all duration-300 cursor-pointer"
@@ -80,8 +96,20 @@ const SpotlightStatus = ({ views, postsCount }) => {
             {data.examsAppeared}
           </p>
         </div>
+        }
 
-        {/* ✅ Qualified Exams */}
+        { role === "JOB_POSTER"?<div
+          onClick={() => console.log("Qualified Exams clicked")}
+          className="bg-cyan-800/40 rounded-xl px-4 py-3 flex flex-col items-center justify-center shadow-sm hover:shadow-md hover:bg-cyan-800/60 transition-all duration-300 cursor-pointer col-span-2 md:col-span-1"
+        >
+          <BadgeCheck className="mb-2 text-2xl text-emerald-400" />
+          <p className="text-gray-200 text-xs font-medium text-center">
+           Active Jobs
+          </p>
+          <p className="text-white text-lg font-semibold mt-1">
+            {data.qualifiedExams}
+          </p>
+        </div>:
         <div
           onClick={() => console.log("Qualified Exams clicked")}
           className="bg-cyan-800/40 rounded-xl px-4 py-3 flex flex-col items-center justify-center shadow-sm hover:shadow-md hover:bg-cyan-800/60 transition-all duration-300 cursor-pointer col-span-2 md:col-span-1"
@@ -94,8 +122,9 @@ const SpotlightStatus = ({ views, postsCount }) => {
             {data.qualifiedExams}
           </p>
         </div>
-       
+        }
       </div>
+     
 
       {/* Example: you can conditionally render your modal here */}
       {

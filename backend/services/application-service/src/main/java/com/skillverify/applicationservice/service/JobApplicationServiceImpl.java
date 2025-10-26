@@ -37,7 +37,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 
 	@Override
 	public JobApplyResponseDto applyForJob(JobApplyDto dto) {
-		log.info("Processing job application for: {}", dto.getJobSeekerEmail());
+		log.info("✅ Processing job application for: {}", dto.getJobSeekerEmail());
 		JobApplication existing = jobApplicationRepository.findByEmailAndJobId(dto.getJobSeekerEmail(), dto.getJobId());
 
 		if (existing != null) {

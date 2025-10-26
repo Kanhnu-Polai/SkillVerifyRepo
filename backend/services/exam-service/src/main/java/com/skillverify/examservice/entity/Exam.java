@@ -3,9 +3,8 @@ package com.skillverify.examservice.entity;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import com.skillverify.examservice.enums.ExamStatus;
+import com.skillverify.examservice.constant.ExamStatus;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,51 +15,56 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "exam_info_db")
 @Data
-@Builder
+@Entity
+@Table
 @AllArgsConstructor
-@RequiredArgsConstructor
-
+@Builder
+@NoArgsConstructor
 public class Exam {
+	
+	
 	
 	@Id
 	@GeneratedValue
+	@Column(columnDefinition = "CHAR(36)")
 	private UUID examId;
 	
-    @Column(nullable = false)
-	private UUID jobId;
-    
-    @Column(nullable = false)
-    private UUID applicationId;
 	
-    @Column(nullable = false)
-	private String applicantEmail;
-    
-    @Column(nullable = false)
-    private String publisherEmail;
+	private UUID applicationId;
+	private Long userId;
+	private UUID questionBankId;
+	private UUID proctoringId;
+	private UUID examDetailId;
+	private UUID questionSetId;
+	
+	
+	
+
+	
+	
 	
 	@Enumerated(EnumType.STRING)
-	private ExamStatus status;
+	private ExamStatus examStatus;
 	
-	private LocalDateTime scheduleTime;
-	private int roundOneScore;
-	private int roundTwoScore;
+	private String sessionId;
+	private String cheatingPercentage;
+	
+	private LocalDateTime startTime;
+	private LocalDateTime endTime;
+	private String duration;
+
+	
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 	
-	@PostConstruct
-	private void onCreate() {
-		this.createdAt = LocalDateTime.now();
-		
-	}
 	
-	@PostConstruct
-	private void onUpdate() {
-		this.updatedAt = LocalDateTime.now();
-	}
+	
+	
+	
+	
+	
 
 }
