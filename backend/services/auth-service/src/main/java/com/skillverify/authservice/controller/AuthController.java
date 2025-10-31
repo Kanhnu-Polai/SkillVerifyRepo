@@ -148,7 +148,7 @@ public class AuthController {
 			}
 			
 			log.info("✅ Authentication successful for email: {}", loginRequestDto.getEmail());
-			// Generate JWT token
+		
 			log.info("✅ Send details to genearte JWT token form user : {}", loginRequestDto.getEmail());
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 			

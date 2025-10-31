@@ -1,30 +1,11 @@
 import axios from "axios";
-
-// Step-1: Build One Axios instance for job microservice
-const jobApi = axios.create({
-    baseURL: "http://localhost:8086/api/job",
-    timeout: 10000,
-    headers: {
-        "Content-Type": "application/json"
-    }
-});
-
-// Step-2: Response / error interceptor
-jobApi.interceptors.response.use(
-    res => res,
-    err => {
-        const message = 
-        err?.response?.data?.message || 
-        err.message ||
-        "Network or Server Error";
-        return Promise.reject(new Error(message));
-    }
-);
-
-// Step-3: Public Helper function
-export async function fetchJobs() {
-    const res = await jobApi.get("/getAllJobs");
-    return res.data;
-}
-
-export { jobApi };
+const JOB_BASE_URL = import.meta.env.VITE_SKILLVERIFY_JOB_SERVICE_BASE_URL;
+export const fetchJobs = async () => {
+  try {
+    const response = await axios.get(`${JOB_BASE_URL}/getAllJobs`);
+    return response.data;
+  } catch (error) {
+    console.error("❌ Error fetching jobs:", error);
+    throw error;
+  }
+};

@@ -3,73 +3,75 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import Bio            from "../account/Bio";
-
 /* Seeker-only pages */
-import Applications   from "../account/jobseekernavcomponets/Applications";
-import SavedJobs      from "../account/jobseekernavcomponets/SavedJobs";
-import ResumeManager  from "../account/jobseekernavcomponets/ResumeManager";
-import Settings       from "../account/jobseekernavcomponets/Settings";
-import JobSeekerNav from "../account/jobseekernavcomponets/JobSeekerNav";
-import JobPosterNav from "../account/jobPosterNavComponets/JobPosterNav";
-import MyListedJobs from "../account/jobPosterNavComponets/MyListedJobs";
-import JobApplicants from "../account/jobPosterNavComponets/JobApplicants";
-import ShortlistedCandidates from "../account/jobPosterNavComponets/ShortlistedCandidates";
-import RevievedResumes from "../account/jobPosterNavComponets/RevievedResumes";
-import PosterSetting from "../account/jobPosterNavComponets/PosterSetting";
+import Applications from "../../features/profile/jobSeeker/pages/Applications";
+import SavedJobs from "../../features/profile/jobSeeker/pages/SavedJobs";
+import ResumeManager from "../../features/profile/jobSeeker/pages/ResumeManager";
+import Settings from "../../features/profile/jobSeeker/pages/Settings";
+import JobSeekerNav from "../../features/profile/jobSeeker/navbar/JobSeekerNav";
+import JobPosterNav from "../../features/profile/jobPoster/navbar/JobPosterNav";
+import MyListedJobs from "../../features/profile/jobPoster/pages/MyListedJobs";
+import JobApplicants from "../../features/profile/jobPoster/pages/JobApplicants";
+import ShortlistedCandidates from "../../features/profile/jobPoster/pages/ShortlistedCandidates";
+import RevievedResumes from "../../features/profile/jobPoster/pages/RevievedResumes";
+import PosterSetting from "../../features/profile/jobPoster/pages/PosterSetting";
 import Footer from "../../utils/footer/Footer";
-import About from "../../utils/footer/About";
-import ProfileNav from "../account/jobseekernavcomponets/ProfileNav";
-import T2 from "../test/T2";
+
+import ProfileNav from "../../features/profile/componets/ProfileInfo";
 
 const ProfilePage = () => {
-  
   const { userData } = useSelector((state) => state.userData);
   const role = userData?.role || "GUEST";
 
- 
   const renderRoleSpecificContent = () => {
     switch (role) {
       case "JOB_SEEKER":
         return (
           <>
-           <div >
-            
-             <JobSeekerNav />
+            <div>
+              <JobSeekerNav />
 
-            <Routes>
-              
-              <Route path="applied-job"     element={<Applications   />} />
-              <Route path="saved-jobs"      element={<SavedJobs      />} />
-              <Route path="resume-manager"  element={<ResumeManager  />} />
-              <Route path="settings"        element={<Settings       />} />
-               <Route path="bio"        element={<ProfileNav></ProfileNav>} />
-            </Routes>
-           </div>
+              <Routes>
+                <Route path="applied-job" element={<Applications />} />
+                <Route path="saved-jobs" element={<SavedJobs />} />
+                <Route path="resume-manager" element={<ResumeManager />} />
+                <Route path="settings" element={<Settings />} />
+                <Route path="bio" element={<ProfileNav></ProfileNav>} />
+              </Routes>
+            </div>
           </>
         );
 
-      
       case "JOB_POSTER":
-        return(
+        return (
           <>
-           <JobPosterNav></JobPosterNav>
+            <JobPosterNav></JobPosterNav>
 
-           <Routes>
-            <Route path="bio" element={<ProfileNav></ProfileNav>}></Route>
-            <Route path="my-listed-jobs" element = {<MyListedJobs></MyListedJobs>}></Route>
-            <Route path="job-applications" element = {<JobApplicants></JobApplicants>}></Route>
-            <Route path="short-listed" element = {<ShortlistedCandidates></ShortlistedCandidates>}></Route>
-            <Route path="reviced-resumes" element={<RevievedResumes></RevievedResumes>}></Route>
-            <Route path="poster-settings" element={<PosterSetting></PosterSetting>}></Route>
-           </Routes>
+            <Routes>
+              <Route path="bio" element={<ProfileNav></ProfileNav>}></Route>
+              <Route
+                path="my-listed-jobs"
+                element={<MyListedJobs></MyListedJobs>}
+              ></Route>
+              <Route
+                path="job-applications"
+                element={<JobApplicants></JobApplicants>}
+              ></Route>
+              <Route
+                path="short-listed"
+                element={<ShortlistedCandidates></ShortlistedCandidates>}
+              ></Route>
+              <Route
+                path="reviced-resumes"
+                element={<RevievedResumes></RevievedResumes>}
+              ></Route>
+              <Route
+                path="poster-settings"
+                element={<PosterSetting></PosterSetting>}
+              ></Route>
+            </Routes>
           </>
-        )
-       
-
-             
-      // case "ADMIN":
-      //   return <AdminDashboard />;
+        );
 
       default:
         return (
@@ -80,21 +82,15 @@ const ProfilePage = () => {
     }
   };
 
-  /* --------------------------------------------------------------------
-     MAIN RENDER
-  -------------------------------------------------------------------- */
-  return (<>
-    <div className="flex flex-row items-start gap-6">
-     {/* <div className="hidden md:block">
-       <Bio />
-     </div> */}
-      <div className="">{renderRoleSpecificContent()}</div>
-      
-    </div>
+  return (
+    <>
+      <div className="flex flex-row items-start gap-6">
+        <div className="">{renderRoleSpecificContent()}</div>
+      </div>
 
-    <div className="relative top-56">
-     <Footer></Footer>
-    </div>
+      <div className="relative top-56">
+        <Footer></Footer>
+      </div>
     </>
   );
 };

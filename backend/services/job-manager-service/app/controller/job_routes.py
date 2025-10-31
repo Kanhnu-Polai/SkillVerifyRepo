@@ -86,6 +86,3 @@ def get_applications(publisher_email):
     response = job_service.get_job_applications_by_publisher_email(publisher_email)
 
     return response
-
-if __name__ == "__main__":
-    app.run(debug=True, port=5000)

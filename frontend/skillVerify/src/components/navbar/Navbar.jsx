@@ -3,13 +3,13 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/slices/authSlice";
 import SearchBar from "../../utils/search/SearchBar";
-import AccountMenu from "../profile/AccountMenu";
-import Admin from "../profile/Admin";
-import JobPosterMenu from "../profile/JobPosterMenu";
+import AccountMenu from "../../features/profile/jobSeeker/menu/JobSeekerMenu";
+import Admin from "../../features/profile/admin/menu/Admin";
+import JobPosterMenu from "../../features/profile/jobPoster/menu/JobPosterMenu";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { FaShieldAlt, FaBars, FaTimes, FaSearch } from "react-icons/fa";
-import T1 from "../test/T1";
+import { CheckCircle } from "lucide-react";
 import { FaSignOutAlt } from "react-icons/fa";
 
 const Navbar = () => {
@@ -44,10 +44,10 @@ const Navbar = () => {
             <div>
               <NavLink to="/" className="flex items-center gap-1">
                 <span className="text-lg md:text-2xl antialiased font-extrabold tracking-wider text-blue-600 hover:text-purple-600">
-                  SkillVerify
+                  <span className="text-emerald-400">SKILL</span><span>Verify</span>
                 </span>
-                <sup className="text-[6px] md:text-[10px] text-orange-500 font-semibold animate-pulse">
-                  Beta
+                <sup className="text-[6px] md:text-[10px] text-indigo-900 font-bold antialiased ">
+                  v.0.0.1
                 </sup>
               </NavLink>
               <p className="text-[8px] md:text-xs text-gray-500 tracking-wider">
@@ -62,6 +62,10 @@ const Navbar = () => {
              <NavLink to="/" className={navLinkClass}>
               Home
             </NavLink>
+            <NavLink to="/govt-jobs" className={navLinkClass}>
+              Govt.
+            </NavLink>
+
             <NavLink to="/jobs" className={navLinkClass}>
               Jobs
             </NavLink>
@@ -172,6 +176,10 @@ const Navbar = () => {
               className={navLinkClass}
               onClick={() => setMobileMenuOpen(false)}
             >Home</NavLink>
+            <NavLink to="/govt-jobs" className={navLinkClass}
+             onClick={() => setMobileMenuOpen(false)}>
+              Govt. Jobs
+            </NavLink>
             <NavLink
               to="/jobs"
               className={navLinkClass}

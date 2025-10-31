@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const PROFILE_BASE_URL = "http://localhost:9093/api/v1/profile-info";
+const PROFILE_BASE_URL = import.meta.env.VITE_SKILLVERIFY_PROFILE_INFO_BASE_URL;
 
 export async function updateProfileView(profileId,viewerData) {
   try {

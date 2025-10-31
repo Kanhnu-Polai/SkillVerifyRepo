@@ -2,7 +2,7 @@ import axios from "axios";
 
 const jobApplications = axios.create(
     {
-        baseURL:"http://127.0.0.1:5000/",
+        baseURL:"http://127.0.0.1:5001/",
         timeout:2000,
         headers:{
         "Content-Type": "application/json"

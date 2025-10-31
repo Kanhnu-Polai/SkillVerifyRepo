@@ -59,7 +59,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 		log.info("Created application {}", newApp.getId());
 
 		// 3) Notify other services
-	    jobServiceEngine.updateCandidateCount(newApp.getJobId()); 
+    jobServiceEngine.updateCandidateCount(newApp.getJobId()); 
 	    
 	    
 	    JobManagerAckDto ackDto = JobManagerAckDto.builder()

@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const AUTH_BASE_URL = "http://localhost:8080/api/auth";
-const USER_BASE_URL = "http://localhost:8083/api/users/update";
+const AUTH_BASE_URL = import.meta.env.VITE_SKILLVERIFY_AUTH_SERVICE_URL;
+const USER_BASE_URL = import.meta.env.VITE_SKILLVERIFY_USER_SERVICE_BASE_URL+"/update";
 
 
 export async function confirmPassword(confirmData) {

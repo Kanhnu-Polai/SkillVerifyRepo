@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { AiOutlineCaretLeft } from "react-icons/ai";
-import SpotlightNav from "../components/spotlight/SpotlightNav";
-import Post from "../components/spotlight/Post";
+import SpotlightNav from "../features/spotlight/SpotlightNav";
+import Post from "../features/spotlight/Post";
 import { useEffect } from "react";
 
 const Spotlight = () => {

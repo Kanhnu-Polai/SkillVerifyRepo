@@ -19,7 +19,7 @@ public class JobServiceHttpEngine {
     private final RestClient restClient;
 
     // externalize URL to application.properties
-    @Value("${job-manager-service.url=http://job-manager-service:5000/add_job}")
+    @Value("${job-manager-service.url}")
     private String jobManagerUrl;
 
     public JobServiceHttpEngine(RestClient restClient) {
@@ -29,6 +29,7 @@ public class JobServiceHttpEngine {
     public String makeCallToJobApplicationServiceToAddJob(JobDto jobDto) {
         try {
             log.info("📡 Making call to job application service to add job with ID: {}", jobDto.getJobId());
+            log.info("📡 Job Manager Service URL: {}", jobManagerUrl);
 
             ResponseEntity<String> response = restClient.post()
                     .uri(jobManagerUrl)

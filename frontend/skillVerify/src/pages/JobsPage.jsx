@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import PublicJobCard   from "./job/PublicJobCard";
-import ResumeSelectModal from "./job/ResumeSelectModal";
-import JobDetailsModal from "../components/account/jobPosterNavComponets/jobs/JobDetailsModal";
+import PublicJobCard   from "../features/job/componets/PublicJobCard";
+import ResumeSelectModal from "../components/resume/ResumeSelectModal";
+import JobDetailsModal from "../features/job/modals/JobDetailsModal";
 import Footer          from "../utils/footer/Footer";
-import { fetchJobs }   from "../apiManager/jobApi";
+import {fetchJobs} from "/src/apiManager/jobApi.js"
+
 import { timeAgo }     from "../utils/time";
 import { toast }       from "react-hot-toast";     // ensure react-hot-toast is installed
-import JobFilterBar from "../utils/job/JobFilterBar";
+import JobFilter from "../features/job/jobFilter/JobFilter";
+
 
 export default function JobsPage() {
   const [jobs, setJobs]          = useState([]);
@@ -15,7 +17,7 @@ export default function JobsPage() {
   const [loading, setLoading]    = useState(true);
   const [error, setError]        = useState("");
 
-  /* fetch once on mount */
+  
   useEffect(() => {
     (async () => {
       try {
@@ -49,10 +51,10 @@ export default function JobsPage() {
   /* --------- main page --------- */
   return (
     <div >
-       
-           {/* <JobFilterBar></JobFilterBar> */}
+        <JobFilter/>
           
-      <main className="min-h-screen bg-gray-50  px-4 sm:px-6 lg:px-8 mt-22">
+          
+      <main className="min-h-screen bg-gray-50  px-4 sm:px-6 lg:px-8 mt-4">
         
         <div className="max-w-7xl mx-auto">
          
@@ -60,7 +62,7 @@ export default function JobsPage() {
 
           <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-2">
             {jobs.length === 0 ? (
-              <p className="col-span-full text-center text-gray-500">
+              <p className="col-span-full text-center text-gray-500 ">
                 No jobs available right now.
               </p>
             ) : (

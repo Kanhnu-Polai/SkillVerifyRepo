@@ -28,6 +28,9 @@ public class JobServiceEngine {
 	@Value("${job.service.base-url}")
 	private String jobserviceBaseUrl ;
 	
+	@Value("${job.manager.service.base-url}")
+	private String jobManagerServiceBaseUrl;
+	
 	
 	public ResponseEntity<?> updateCandidateCount(UUID jobId) {
 	
@@ -70,10 +73,11 @@ public class JobServiceEngine {
 	public ResponseEntity<String> makeCallToJobManagerServiceToAddApplication(JobManagerAckDto jobApplyDto) {
 		log.info("📡 Making call to job manager service to add application for jobId: {} and application Id {}", jobApplyDto.getJobId(),jobApplyDto.getApplicationId() );
 
+		log.info("📡 Job Manager Service URL: {}", jobManagerServiceBaseUrl + "/application");
 
 	    ResponseEntity<String> response = restClient
 	            .post()
-	            .uri("http://127.0.0.1:5000/application")
+	            .uri(jobManagerServiceBaseUrl + "/application")
 	            .contentType(MediaType.APPLICATION_JSON)
 	            .body(jobApplyDto)
 	            .retrieve()

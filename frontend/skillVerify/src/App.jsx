@@ -5,20 +5,23 @@ import { Toaster } from 'react-hot-toast';
 
 import Navbar from './components/navbar/Navbar';
 import Homepage from './pages/Homepage';
-import LoginModal from './components/auth/LoginModal';
-import Signup     from './components/auth/SignUp';
+import LoginModal from './features/auth/login/LoginModal';
+import Signup from './features/auth/signup/SignUp';
 import ProfilePage from './components/protected/ProfilePage';
 import PrivateRoute from './components/protected/PrivateRoute';
-import ForgotPasswordModal from './utils/login/ForgotPassword';
+import ForgotPasswordModal from './features/auth/componets/ForgotPassword';
 
 import { login, setAuthChecked } from './redux/slices/authSlice';
 import { fetchUserData }        from './redux/thunk/UserDataThunk';
 import JobsPage from "./pages/JobsPage";
-import CreateJobPage from './pages/CreateJobPage';
+import CreateJobPage from './features/job/pages/CreateJobPage';
 
 import { fetchJobsByPosterEmail } from './redux/thunk/jobThunk';
 import Spotlight from './pages/Spotlight';
-import ProfileLayout from './components/test/ProfileLayout';
+import SplashScreen from './components/SplashScreen';
+import GovtJobs from './pages/GovtJobs';
+import GovtJobDetails from './features/govt/GovtJobDetails';
+
 
 
 
@@ -63,6 +66,7 @@ const App = () => {
   ------------------------------------------------------------------ */
   if (!isAuthChecked || userDataLoading) {
     return (
+      
       <div className="text-center mt-20 text-lg">
         {userDataLoading ? 'Loading profile…' : 'Checking authentication…'}
       </div>
@@ -74,6 +78,7 @@ const App = () => {
   ------------------------------------------------------------------ */
   return (
     <>
+    <SplashScreen/>
       <Toaster position="top-center" />
       {location.pathname !== "/exam" && <Navbar />}
 
@@ -82,9 +87,11 @@ const App = () => {
       <Routes>
         <Route path="/"        element={<Homepage />} />
         <Route path='/jobs' element = {<JobsPage></JobsPage>}/>
+        <Route path='/govt-jobs' element={<GovtJobs/>}/>
         <Route path="/login"   element={<LoginModal />} />
         <Route path='/spotlight' element={<Spotlight></Spotlight>}></Route>
         <Route path="/signup"  element={<Signup />} />
+        <Route path='/govt-job-details' element = {<GovtJobDetails/>}/>
        
 
         

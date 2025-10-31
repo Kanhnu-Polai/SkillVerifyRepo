@@ -71,6 +71,8 @@ public class ExamServiceImpl implements ExamService {
 		//TODO: implement the exam initiation logic
 		//step-1 : validate the user by calling user-service
 		//step-2 : validate the application by calling application-service
+		
+		
 		//step-3 : get the session details by calling session-service
 		//step-4 : get the exam details from exam-details-service
 		//step-5 : create exam entity and save it to exam table
