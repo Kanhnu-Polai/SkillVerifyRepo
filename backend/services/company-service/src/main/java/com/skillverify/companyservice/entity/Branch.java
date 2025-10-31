@@ -1,5 +1,8 @@
 package com.skillverify.companyservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,6 +28,7 @@ public class Branch {
 	
 	@ManyToOne
 	@JoinColumn(name = "company_id")
+	@JsonBackReference
 	private Company company;
 	
 	@Embedded

@@ -1,8 +1,10 @@
 package com.skillverify.companyservice.entity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.skillverify.companyservice.contants.CompanyType;
 
 import jakarta.persistence.CascadeType;
@@ -28,16 +30,19 @@ public class Company {
 	@Id
 	@GeneratedValue
 	private UUID id;
+	private Long createdUserId;
 	
 	
 	private String companyName;
 	private String companyDescription;
 	
+	@ElementCollection(targetClass = CompanyType.class)
 	@Enumerated(EnumType.STRING)
-	private CompanyType companyType;
+	private List<CompanyType> companyTypes;
 	
 	
 	@OneToMany(mappedBy = "company" , cascade = CascadeType.ALL ,orphanRemoval = true)
+	@JsonManagedReference
 	private List<Branch> branch;
 	
 	private int numberOfBranches;
@@ -50,7 +55,11 @@ public class Company {
 	private List<String> services;
 	
 	@OneToMany(mappedBy = "company" , cascade = CascadeType.ALL , orphanRemoval = true)
+	@JsonManagedReference
 	private List<Products> products;
+	
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
 	
 	
 
