@@ -4,10 +4,11 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import com.skillverify.jobservice.entity.Job;
 
-public interface JobRepository extends JpaRepository<Job, UUID> {
+public interface JobRepository extends JpaRepository<Job, UUID>,JpaSpecificationExecutor<Job> {
 	
 	
 	Job findByJobId(UUID jobId);
