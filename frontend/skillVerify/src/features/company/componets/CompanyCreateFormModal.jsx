@@ -18,29 +18,13 @@ const CompanyCreateFormModal = ({onClose}) => {
     website: "",
     logoUrl: "",
     services: [], // list of services (e.g. Software, AI, etc.)
-    branches: [
-      {
-        branchName: "",
-        headQuarter: false,
-        address: {
-          street: "",
-          city: "",
-          state: "",
-          country: "",
-          zipCode: ""
-        }
-      }
-    ],
-    products: [
-      {
-        productName: "",
-        productDescription: "",
-        productWebsite: "",
-        productLogoUrl: ""
-      }
-    ]
+    branches: [],
+    products: []
   });
  
+  useEffect(() => {
+  console.log("🟣 Company object updated:", company);
+}, [company]);
 
   const[currentStep,setCurrenStep] = useState(1);
   const handleNext = ()=>{
