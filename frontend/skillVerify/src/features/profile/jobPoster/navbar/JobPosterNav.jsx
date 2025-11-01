@@ -61,6 +61,14 @@ const JobPosterNav = () => {
           >
             Received Resumes
           </NavLink>
+           <NavLink
+            to="/profile/company"
+            className={({ isActive }) =>
+              `${linkBase} ${isActive ? active : inactive}`
+            }
+          >
+            Companies
+          </NavLink>
 
           <NavLink
             to="/profile/poster-settings"
@@ -70,6 +78,7 @@ const JobPosterNav = () => {
           >
             Settings
           </NavLink>
+         
         </div>
       </nav>
 

@@ -18,6 +18,7 @@ import PosterSetting from "../../features/profile/jobPoster/pages/PosterSetting"
 import Footer from "../../utils/footer/Footer";
 
 import ProfileNav from "../../features/profile/componets/ProfileInfo";
+import Company from "../../features/profile/jobPoster/pages/Company";
 
 const ProfilePage = () => {
   const { userData } = useSelector((state) => state.userData);
@@ -65,6 +66,7 @@ const ProfilePage = () => {
                 path="reviced-resumes"
                 element={<RevievedResumes></RevievedResumes>}
               ></Route>
+              <Route path="company" element = {<Company/>}/>
               <Route
                 path="poster-settings"
                 element={<PosterSetting></PosterSetting>}
