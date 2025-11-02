@@ -10,6 +10,7 @@ import com.skillverify.companyservice.dto.CompanyDto;
 import com.skillverify.companyservice.entity.Company;
 import com.skillverify.companyservice.service.CompanyService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,7 +29,7 @@ public class CompanyController {
 	
 	
 	@PostMapping("/create")
-	public ResponseEntity<Company> createCompany(@RequestBody CompanyDto companyDto) {
+	public ResponseEntity<Company> createCompany(@Valid @RequestBody CompanyDto companyDto) {
 		log.info("✅ Received request to create company: {}", companyDto);
 		Company company = companyService.createCompany(companyDto);
 		return ResponseEntity.ok(company);

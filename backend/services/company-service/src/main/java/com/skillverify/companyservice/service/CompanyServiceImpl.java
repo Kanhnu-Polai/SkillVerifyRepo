@@ -5,11 +5,13 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.skillverify.companyservice.dto.CompanyCreatedEvent;
 import com.skillverify.companyservice.dto.CompanyDto;
 import com.skillverify.companyservice.entity.Address;
 import com.skillverify.companyservice.entity.Branch;
 import com.skillverify.companyservice.entity.Company;
 import com.skillverify.companyservice.entity.Products;
+import com.skillverify.companyservice.messaging.CompanyEventProducer;
 import com.skillverify.companyservice.repository.CompanyRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ public class CompanyServiceImpl implements CompanyService {
 	
 	
 	private final CompanyRepository companyRepository;
+	private final CompanyEventProducer companyEventProducer;
 
 	@Override
 	public Company createCompany(CompanyDto companyDto) {
@@ -55,6 +58,14 @@ public class CompanyServiceImpl implements CompanyService {
 		}
 		company = companyRepository.save(company);
 		log.info("✅ Company created with ID: {}", company.getId());
+		
+		CompanyCreatedEvent event = CompanyCreatedEvent.builder()
+				.userId(company.getCreatedUserId())
+				.companyId(company.getId())
+				.companyName(company.getCompanyName())
+				.build();
+		
+		companyEventProducer.sendCompanyCreatedMessage(event);
 		
 		return company;
 	}
