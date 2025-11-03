@@ -2,7 +2,7 @@ package com.skillverify.companyservice.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
+import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.stereotype.Service;
 
 import com.skillverify.companyservice.dto.CompanyCreatedEvent;
@@ -21,10 +21,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class CompanyServiceImpl implements CompanyService {
+
+    private final AmqpAdmin amqpAdmin;
 	
 	
 	private final CompanyRepository companyRepository;
 	private final CompanyEventProducer companyEventProducer;
+
+    
 
 	@Override
 	public Company createCompany(CompanyDto companyDto) {
@@ -110,6 +114,17 @@ private List<Products> mapProducts(CompanyDto companyDto, Company company) {
 	                    
 	            
 	}
+
+@Override
+public List<Company> getAllCompanies(Long userId) {
+	// check if userId is provided
+	// check in db and return companies for that userId
+	
+	log.info("✅ Fetching companies for userId: {}", userId);
+	List<Company> companies = companyRepository.findByCreatedUserId(userId);
+	log.info("✅ Found {} companies for userId: {}", companies.size(), userId);
+	return companies;
+}
 		
 
 }

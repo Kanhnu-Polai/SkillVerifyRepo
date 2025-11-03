@@ -1,7 +1,11 @@
 package com.skillverify.companyservice.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +39,14 @@ public class CompanyController {
 		log.info("✅ Received request to create company: {}", companyDto);
 		Company company = companyService.createCompany(companyDto);
 		return ResponseEntity.ok(company);
+	}
+	
+	
+	@GetMapping("/user/{userId}")
+	public ResponseEntity<List<Company>> getAllCompanies(@PathVariable Long userId) {
+		log.info("✅ Received request to get all companies");
+		List<Company> companies = companyService.getAllCompanies(userId);
+		return ResponseEntity.ok(companies);
 	}
 
 }
