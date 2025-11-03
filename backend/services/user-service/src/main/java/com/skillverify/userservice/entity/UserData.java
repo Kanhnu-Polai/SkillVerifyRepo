@@ -1,7 +1,5 @@
 package com.skillverify.userservice.entity;
 
-import java.util.List;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
@@ -45,7 +43,10 @@ public class UserData {
     private String portfolioUrl;
     private String youtubeUrl;
     private int profileView;
+    
 
+    @ElementCollection
+    private List<UUID> companyIds = new ArrayList<>();
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Experience> workExperience = new ArrayList<>();
