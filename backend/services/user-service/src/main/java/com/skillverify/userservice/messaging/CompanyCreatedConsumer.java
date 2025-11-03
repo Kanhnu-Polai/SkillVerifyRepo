@@ -1,5 +1,7 @@
 package com.skillverify.userservice.messaging;
 
+import java.util.Optional;
+
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
@@ -22,8 +24,8 @@ public class CompanyCreatedConsumer {
 	public void receiveMessage(CompanyCreatedEvent message) {
 		log.info("Received Company Created Message: {}", message);
 		
-		UserData existingUser = userDataRepository.findById(message.getUserId()).orElseThrow(
-				() -> new RuntimeException("User not found with ID: " + message.getUserId()));
+	 Optional<UserData >	existingUser = userDataRepository.findById(message.getUserId());
+			
 		
 		if(existingUser == null) {
 			log.warn("User with ID {} not found. Cannot associate company ID {}", message.getUserId(), message.getCompanyId());
