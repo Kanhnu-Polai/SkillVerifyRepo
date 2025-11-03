@@ -1,5 +1,5 @@
 import axios from "axios";
-const COMPANY_BASE_URL = import.meta.env.VITE_SKILLVERIFY_COMPANY_SERVICEBASE_URL;
+const COMPANY_BASE_URL = import.meta.env.VITE_SKILLVERIFY_COMPANY_SERVICE_BASE_URL;
 export const addCompany = async (companyInfo) => {
   try {
     const response = await axios.post(`${COMPANY_BASE_URL}/create`,companyInfo,
