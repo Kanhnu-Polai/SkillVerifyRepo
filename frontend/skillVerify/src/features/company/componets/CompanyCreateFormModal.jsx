@@ -6,11 +6,16 @@ import Step3AdditionalInfo from './steps/Step3AdditionalInfo';
 import Step4BranchesInfo from './steps/Step4BranchesInfo';
 import Step5ProductInfo from './steps/Step5ProductInfo';
 
+import { addCompany } from '../../../apiManager/companyServiceAPI';
+
 const CompanyCreateFormModal = ({onClose}) => {
+
+
+  const userId = localStorage.getItem("userId")
 
   const [company, setCompany] = useState({
     companyName: "",
-    createdUserId: "",
+    createdUserId:userId,
     companyDescription: "",
     companyTypes: [], // multiple types (STARTUP, PRODUCT_BASED, etc.)
     numberOfBranches: "",
@@ -33,6 +38,18 @@ const CompanyCreateFormModal = ({onClose}) => {
 
   const handlePrev = ()=>{
     setCurrenStep((prev)=>prev-1)
+  }
+
+  const handleSubmit = async()=>{
+
+    try {
+      const res = await addCompany(company)
+      console.log(res)
+      
+    } catch (error) {
+      
+    }
+    
   }
 
 
@@ -70,7 +87,7 @@ const CompanyCreateFormModal = ({onClose}) => {
         </button>
       ) : (
         <button
-          onClick={() => console.log(formData)}
+          onClick={() => handleSubmit()}
           className="px-4 py-2 bg-green-600 text-white rounded-md"
         >
           Submit
