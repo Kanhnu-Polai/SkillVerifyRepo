@@ -1,6 +1,7 @@
 package com.skillverify.companyservice.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/companies")
 @Slf4j
+@CrossOrigin(origins = "http://localhost:5173")
 @RequiredArgsConstructor
 public class CompanyController {
 	
