@@ -7,11 +7,15 @@ import Step4BranchesInfo from './steps/Step4BranchesInfo';
 import Step5ProductInfo from './steps/Step5ProductInfo';
 
 import { addCompany } from '../../../apiManager/companyServiceAPI';
+import { useNavigate } from 'react-router-dom';
 
 const CompanyCreateFormModal = ({onClose}) => {
 
 
   const userId = localStorage.getItem("userId")
+  const navigate = useNavigate()
+
+  const[loading,setLoading] = useState(false)
 
   const [company, setCompany] = useState({
     companyName: "",
@@ -43,10 +47,16 @@ const CompanyCreateFormModal = ({onClose}) => {
   const handleSubmit = async()=>{
 
     try {
+      setLoading(true)
       const res = await addCompany(company)
       console.log(res)
+      setLoading(false)
+      onClose(false)
+      
+  
       
     } catch (error) {
+      setLoading(false)
       
     }
     
@@ -90,7 +100,9 @@ const CompanyCreateFormModal = ({onClose}) => {
           onClick={() => handleSubmit()}
           className="px-4 py-2 bg-green-600 text-white rounded-md"
         >
-          Submit
+        {
+          loading?"Adding Company....":"Add Company"
+        }
         </button>
       )}
     </div>

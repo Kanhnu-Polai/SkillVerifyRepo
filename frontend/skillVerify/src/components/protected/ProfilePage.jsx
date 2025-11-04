@@ -19,6 +19,7 @@ import Footer from "../../utils/footer/Footer";
 
 import ProfileNav from "../../features/profile/componets/ProfileInfo";
 import Company from "../../features/profile/jobPoster/pages/Company";
+import CompanyDetails from "../../features/company/componets/CompanyDetails";
 
 const ProfilePage = () => {
   const { userData } = useSelector((state) => state.userData);
@@ -71,6 +72,7 @@ const ProfilePage = () => {
                 path="poster-settings"
                 element={<PosterSetting></PosterSetting>}
               ></Route>
+              <Route path="company-details" element = {<CompanyDetails/>} />
             </Routes>
           </>
         );

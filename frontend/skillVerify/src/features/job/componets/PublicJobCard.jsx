@@ -25,6 +25,8 @@ export default function PublicJobCard({
 }) {
   const navigate = useNavigate();
 
+  console.log(job)
+
   const {
     companyPhotoLink = "/default-logo.png",
     jobTitle = "Software Engineer",

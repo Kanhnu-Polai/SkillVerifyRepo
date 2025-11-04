@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.skillverify.companyservice.contants.CompanyType;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -32,7 +33,7 @@ public class Company {
 	private UUID id;
 	private Long createdUserId;
 	
-	
+	@Column(columnDefinition = "TEXT")
 	private String companyName;
 	private String companyDescription;
 	

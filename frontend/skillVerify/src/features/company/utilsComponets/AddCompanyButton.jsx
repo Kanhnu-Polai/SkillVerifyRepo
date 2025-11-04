@@ -5,7 +5,7 @@ const AddCompanyButton = ({click}) => {
   return (
     <div>
       <button onClick={()=>click(true)}
-        className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-md 
+        className="flex text-sm md:text-base items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-md 
                    hover:bg-indigo-700 hover:shadow-lg hover:scale-105 
                    transition-all duration-300 ease-in-out"
       >

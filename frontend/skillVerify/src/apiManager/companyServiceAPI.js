@@ -15,3 +15,18 @@ export const addCompany = async (companyInfo) => {
     throw error;
   }
 };
+
+export const getCompany = async(userId)=>{
+
+    try {
+        const response = await axios.get(`${COMPANY_BASE_URL}/user/${userId}`)
+        console.log("Received companies : ",response.data)
+        return response.data;
+
+
+    } catch (error) {
+        console.log(error)
+        
+    }
+
+}
