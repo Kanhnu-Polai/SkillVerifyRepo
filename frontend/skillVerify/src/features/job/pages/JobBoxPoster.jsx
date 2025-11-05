@@ -38,13 +38,13 @@ const JobBoxPoster = ({
   return (
     <article
       className="
-        bg-white border border-gray-200 rounded-2xl p-5
+        bg-white border-4 border-gray-200 rounded-2xl p-5
         shadow-sm hover:shadow-lg hover:scale-105 transition-all
         w-full max-w-3xl hover:bg-slate-200 
       "
     >
       {/* ------- main grid: logo | body ------- */}
-      <div className="grid sm:grid-cols-[auto,1fr] gap-4">
+      <div className="grid sm:grid-cols-[auto,1fr] gap-4 border-4">
         {/* logo */}
         <img
           src={companyPhotoLink}

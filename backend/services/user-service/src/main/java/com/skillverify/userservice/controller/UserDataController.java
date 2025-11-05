@@ -27,8 +27,7 @@ public class UserDataController {
     private final UserDataService userDataService;
     private final String className = this.getClass().getSimpleName();
     
-//-------------------------------------------------------------------------------------------------------------------------------
-   
+
     @PostMapping("/create")
     public ResponseEntity<UserDataDto> createUser(
             @Valid @RequestBody UserDataDto userDataDto) {
@@ -43,8 +42,7 @@ public class UserDataController {
     }
     
     
-  //-------------------------------------------------------------------------------------------------------------------------------
-    
+ 
     
     @PutMapping("/social-links/update")
     public ResponseEntity<SocialLinksDto> upadteUserSociaLinks(  @RequestBody SocialLinksDto socialLinksDto ){
@@ -60,7 +58,6 @@ public class UserDataController {
     
     
     
-  //-------------------------------------------------------------------------------------------------------------------------------
 
     
     @PutMapping("/update/phone-or-email")
@@ -75,7 +72,6 @@ public class UserDataController {
 
     
     
-  //-------------------------------------------------------------------------------------------------------------------------------
 
    
     @GetMapping("/email/{email}")
@@ -90,7 +86,6 @@ public class UserDataController {
     }
 
     
-  //-------------------------------------------------------------------------------------------------------------------------------
 
     
     @PutMapping("/update/{email}")
@@ -106,7 +101,6 @@ public class UserDataController {
     }
     
     
-  //-------------------------------------------------------------------------------------------------------------------------------
 
     @PutMapping("/skills/add")
     public ResponseEntity<UserSkillDto> addSkillsToUser(@RequestBody UserSkillDto userSkillDto ){ 
@@ -120,7 +114,6 @@ public class UserDataController {
 	}
 	
     
-  //-------------------------------------------------------------------------------------------------------------------------------
 
 	@DeleteMapping("/delete/{email}/{password}")
 	public ResponseEntity<String> deleteUser( @PathVariable String email, @PathVariable String password) {
@@ -136,7 +129,6 @@ public class UserDataController {
 	
 	
 	
-	//-------------------------------------------------------------------------------------------------------------------------------
 
 	
 	@PutMapping("/update/education/{userId}")
@@ -151,7 +143,6 @@ public class UserDataController {
 	
 	
 	
-	//-------------------------------------------------------------------------------------------------------------------------------
 
 	
 	@PutMapping("/update/experience/{userId}")
@@ -166,7 +157,6 @@ public class UserDataController {
 	
 	
 	
-	//-------------------------------------------------------------------------------------------------------------------------------
 
     
     
@@ -180,7 +170,6 @@ public class UserDataController {
     }
     
     
-  //-------------------------------------------------------------------------------------------------------------------------------
 
     @PostMapping("/update-profile-view")
     public ResponseEntity<String> updateProfileViewCount(@RequestParam Long userId) {
@@ -197,7 +186,6 @@ public class UserDataController {
     }
     
     
- //-------------------------------------------------------------------------------------------------------------------------------
 
     @PostMapping("/update-post-count")
     public ResponseEntity<String> updatePostCount(@RequestParam Long userId){

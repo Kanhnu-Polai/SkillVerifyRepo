@@ -62,8 +62,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 		jobApplicationRepository.save(newApp);
 		log.info("Created application {}", newApp.getId());
 
-		// 3) Notify other services
-   // jobServiceEngine.updateCandidateCount(newApp.getJobId()); 
+		
 	    
 	    
 	    JobManagerAckDto ackDto = JobManagerAckDto.builder()

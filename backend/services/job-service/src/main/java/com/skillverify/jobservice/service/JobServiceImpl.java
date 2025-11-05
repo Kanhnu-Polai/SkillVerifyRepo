@@ -1,6 +1,5 @@
 package com.skillverify.jobservice.service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +15,6 @@ import com.skillverify.jobservice.dto.JobUpdationDto;
 import com.skillverify.jobservice.entity.Job;
 import com.skillverify.jobservice.exception.FailedToCallJobManagerServiceException;
 import com.skillverify.jobservice.exception.JobNotFoundException;
-import com.skillverify.jobservice.exception.PublisherEmailOrIdMissingExeption;
 import com.skillverify.jobservice.http.JobServiceHttpEngine;
 import com.skillverify.jobservice.repository.JobRepository;
 
@@ -28,11 +26,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 
 public class JobServiceImpl implements JobService {
-	
-	
+
 	private final JobRepository jobRepository;
 	private final JobServiceHttpEngine jobServiceHttpEngine;
-	
+
 	private final CloudinaryService cloudinaryService;
 
 	@Override
@@ -40,104 +37,80 @@ public class JobServiceImpl implements JobService {
 		log.info("Creating job with details: {}", jobCreateDto.getJobTitle());
 		log.info("Publisher email: {}", jobCreateDto.getPublisherEmail());
 		Job job = Job.builder()
-			
-				.publisherEmail(jobCreateDto.getPublisherEmail())
-				.jobTitle(jobCreateDto.getJobTitle())
-				.jobDescription(jobCreateDto.getJobDescription())
-				.noOfOpenings(jobCreateDto.getNoOfOpenings())
-				.isExamRequired(jobCreateDto.isExamRequired())
-				.companyName(jobCreateDto.getCompanyName())
-				.companyPhotoLink(jobCreateDto.getCompanyPhotoLink())
-				.publicPhotoId(jobCreateDto.getPublicPhotoId())
-				.isRound1Required(jobCreateDto.isRound1Required())
-				.isRound2Required(jobCreateDto.isRound2Required())
-				.lastDateToApply(jobCreateDto.getLastDateToApply())
-				.jobCategory(jobCreateDto.getJobCategory())
-				.jobType(jobCreateDto.getJobType())
-				.numberOfCandidatesShortlisted(0) // Initial value
+
+				.publisherEmail(jobCreateDto.getPublisherEmail()).jobTitle(jobCreateDto.getJobTitle())
+				.jobDescription(jobCreateDto.getJobDescription()).noOfOpenings(jobCreateDto.getNoOfOpenings())
+				.isExamRequired(jobCreateDto.isExamRequired()).companyName(jobCreateDto.getCompanyName())
+				.companyPhotoLink(jobCreateDto.getCompanyPhotoLink()).publicPhotoId(jobCreateDto.getPublicPhotoId())
+				.isRound1Required(jobCreateDto.isRound1Required()).isRound2Required(jobCreateDto.isRound2Required())
+				.lastDateToApply(jobCreateDto.getLastDateToApply()).jobCategory(jobCreateDto.getJobCategory())
+				.jobType(jobCreateDto.getJobType()).numberOfCandidatesShortlisted(0) // Initial value
 				.numberCandidateApply(0) // Initial value
-				.experience(jobCreateDto.getExperience())
-				.location(jobCreateDto.getLocation())
-				.requiredSkill(jobCreateDto.getRequiredSkill())
-				.examTopics(jobCreateDto.getExamTopics())
+				.experience(jobCreateDto.getExperience()).location(jobCreateDto.getLocation())
+				.requiredSkill(jobCreateDto.getRequiredSkill()).examTopics(jobCreateDto.getExamTopics())
 				.createdAt(LocalDateTime.now()) // Set the creation date to today
 				.build();
-		
-		
-		
-		
+
 		jobRepository.save(job);
 		log.info("Job created successfully with ID: {}", job.getJobId());
-		
-		JobDto jobDto = JobDto.builder()
-				.jobId(job.getJobId().toString())
-				.publisherEmail(job.getPublisherEmail())
-				.jobTitle(job.getJobTitle())
-				.companyName(job.getCompanyName())
-				.applications(List.of()) 
-				.build();
-		
+
+		JobDto jobDto = JobDto.builder().jobId(job.getJobId().toString()).publisherEmail(job.getPublisherEmail())
+				.jobTitle(job.getJobTitle()).companyName(job.getCompanyName()).applications(List.of()).build();
+
 		// Call to external service to add job
-		
+
 		try {
 			jobServiceHttpEngine.makeCallToJobApplicationServiceToAddJob(jobDto);
 		} catch (Exception e) {
 			log.error("❌ Error calling job application service: {}", e.getMessage());
 			throw new FailedToCallJobManagerServiceException(ErrorCodeEnum.FAILED_TO_CALL_JOB_MANAGER_SERVICE);
 		}
-		
+
 		return job;
 	}
 
-	
-
 	@Override
 	public boolean deleteJob(UUID jobId, String publisherEmail) {
-	    log.info("JobServiceImpl -> deleteJob() called with jobId: {} and publisherEmail: {}", jobId, publisherEmail);
+		log.info("JobServiceImpl -> deleteJob() called with jobId: {} and publisherEmail: {}", jobId, publisherEmail);
 
-	    
+		Optional<Job> jobOptional = jobRepository.findById(jobId);
 
-	   
+		if (jobOptional.isEmpty()) {
+			log.error("No job found with ID: {}", jobId);
+			throw new JobNotFoundException(ErrorCodeEnum.JOB_NOT_FOUND);
+		}
 
-	  
-	    Optional<Job> jobOptional = jobRepository.findById(jobId);
+		Job job = jobOptional.get();
+		String publicId = job.getPublicPhotoId();
 
-	    if (jobOptional.isEmpty()) {
-	        log.error("No job found with ID: {}", jobId);
-	        throw new JobNotFoundException(ErrorCodeEnum.JOB_NOT_FOUND);
-	    }
+		if (!publisherEmail.equalsIgnoreCase(job.getPublisherEmail())) {
+			log.error("Unauthorized delete attempt for jobId: {} by email: {}", jobId, publisherEmail);
+			throw new EmailNotVerifiedException(ErrorCodeEnum.EMAIL_NOT_VERIFIED);
+		}
 
-	    Job job = jobOptional.get();
-	    String publicId = job.getPublicPhotoId();
-
-	    if (!publisherEmail.equalsIgnoreCase(job.getPublisherEmail())) {
-	        log.error("Unauthorized delete attempt for jobId: {} by email: {}", jobId, publisherEmail);
-	        throw new EmailNotVerifiedException(ErrorCodeEnum.EMAIL_NOT_VERIFIED);
-	    }
-
-	    try {
-	        jobRepository.deleteById(jobId);
-	        cloudinaryService.deleteFile(publicId);
-	        log.info("Job with ID: {} deleted successfully", jobId);
-	        return true;
-	    } catch (Exception e) {
-	        log.error("Error deleting job with ID: {}. Error: {}", jobId, e.getMessage());
-	        throw new RuntimeException("Something went wrong while deleting the job");
-	    }
+		try {
+			jobRepository.deleteById(jobId);
+			cloudinaryService.deleteFile(publicId);
+			log.info("Job with ID: {} deleted successfully", jobId);
+			return true;
+		} catch (Exception e) {
+			log.error("Error deleting job with ID: {}. Error: {}", jobId, e.getMessage());
+			throw new RuntimeException("Something went wrong while deleting the job");
+		}
 	}
 
 	@Override
 	public List<Job> getAllJobsByEmail(String email) {
 		log.info("JobServiceImpl -> getAllJobsByEmail() method called with email: {}", email);
-		
+
 		List<Job> jobs = jobRepository.findByPublisherEmail(email);
 		log.info("" + jobs.size() + " jobs found for email: " + email);
 		if (jobs.isEmpty()) {
-			
+
 			log.warn("No jobs found for email: {}", email);
 			return List.of(); // Return an empty list if no jobs found
 		}
-		
+
 		log.info("Returning {} jobs for email: {}", jobs.size(), email);
 		return jobs;
 	}
@@ -156,7 +129,7 @@ public class JobServiceImpl implements JobService {
 			log.error("Job with ID: {} not found", jobId);
 			throw new JobNotFoundException(ErrorCodeEnum.JOB_NOT_FOUND);
 		}
-		
+
 	}
 
 	@Override
@@ -171,7 +144,8 @@ public class JobServiceImpl implements JobService {
 			return job;
 		} else {
 			log.error("❌ Job not found for JobId : {} ", jobId);
-			return null;}
+			return null;
+		}
 	}
 
 	@Override
@@ -180,22 +154,20 @@ public class JobServiceImpl implements JobService {
 		return null;
 	}
 
-
-
 	@Override
 	public Job updateJob(JobUpdationDto jobUpdationDto, UUID jobId, String publisherEmail) {
-	
+
 		log.info("Updating job with ID: {} for publisher: {}", jobId, publisherEmail);
 		Job existingJob = jobRepository.findById(jobId).orElseThrow(() -> {
 			log.error("Job with ID: {} not found", jobId);
 			return new JobNotFoundException(ErrorCodeEnum.JOB_NOT_FOUND);
 		});
-		
+
 		if (!existingJob.getPublisherEmail().equalsIgnoreCase(publisherEmail)) {
 			log.error("Unauthorized update attempt for jobId: {} by email: {}", jobId, publisherEmail);
 			throw new EmailNotVerifiedException(ErrorCodeEnum.EMAIL_NOT_VERIFIED);
 		}
-		
+
 		// Update fields only if they are not null
 		if (jobUpdationDto.getJobTitle() != null) {
 			existingJob.setJobTitle(jobUpdationDto.getJobTitle());
@@ -224,7 +196,7 @@ public class JobServiceImpl implements JobService {
 		if (jobUpdationDto.getJobType() != null) {
 			existingJob.setJobType(jobUpdationDto.getJobType());
 		}
-		if (jobUpdationDto.getExperience() >=0) {
+		if (jobUpdationDto.getExperience() >= 0) {
 			existingJob.setExperience(jobUpdationDto.getExperience());
 		}
 		if (jobUpdationDto.getLocation() != null) {
@@ -239,17 +211,12 @@ public class JobServiceImpl implements JobService {
 		existingJob.setExamRequired(jobUpdationDto.isExamRequired());
 		existingJob.setRound1Required(jobUpdationDto.isRound1Required());
 		existingJob.setRound2Required(jobUpdationDto.isRound2Required());
-		
+
 		jobRepository.save(existingJob);
 		log.info("Job with ID: {} updated successfully", jobId);
 		return existingJob;
-		
-		
-		
-	
+
 	}
-
-
 
 	@Override
 	public List<Job> getAllJobs() {
@@ -261,13 +228,12 @@ public class JobServiceImpl implements JobService {
 		}
 		log.info("Returning {} jobs from the repository", allJobs.size());
 		return allJobs;
-		
-	}
 
+	}
 
 	@Override
 	public List<Job> getJobsByIds(List<UUID> jobIds) {
-	    return jobRepository.findAllByJobIdIn(jobIds);
+		return jobRepository.findAllByJobIdIn(jobIds);
 	}
 
 }
