@@ -106,15 +106,6 @@ public class JobController {
 		return ResponseEntity.ok(list);
 	}
 
-	@PutMapping("/updateNumberCandidateApply/{jobId}")
-	public ResponseEntity<Job> updateNumberCandidateApply(@PathVariable UUID jobId) {
-
-		// Placeholder for actual logic to update number of candidates applied
-		log.info("[UPDATE] jobId={} number of candidates applied", jobId);
-		Job updatedJob = jobService.updateNumberCandidateApply(jobId); // Example increment by 1
-		return ResponseEntity.status(HttpStatus.OK).body(updatedJob);
-
-	}
 
 	@PostMapping(value = "/jobs/by-ids", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<Job>> getJobsByIds(@RequestBody List<UUID> jobIds) {
