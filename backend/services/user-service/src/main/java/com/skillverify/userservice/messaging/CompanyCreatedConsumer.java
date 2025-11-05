@@ -16,27 +16,34 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @RequiredArgsConstructor
 public class CompanyCreatedConsumer {
-	
-	
-	private final UserDataRepository userDataRepository;
-	
-	@RabbitListener(queues = "company.queue")
-	public void receiveMessage(CompanyCreatedEvent message) {
-		log.info("Received Company Created Message: {}", message);
-		
-	 Optional<UserData >	existingUser = userDataRepository.findById(message.getUserId());
-			
-		
-		if(existingUser == null) {
-			log.warn("User with ID {} not found. Cannot associate company ID {}", message.getUserId(), message.getCompanyId());
-			return;
-		}
-		userDataRepository.findById(message.getUserId()).ifPresent(user -> {
-			user.getCompanyIds().add(message.getCompanyId());
-			userDataRepository.save(user);
-			log.info("Updated user {} with new company ID {}", user.getId(), message.getCompanyId());
-		});
-		log.info("Finished processing Company Created Message for user ID: {}", message.getUserId());
-	}
 
+    private final UserDataRepository userDataRepository;
+
+    @RabbitListener(queues = "company.queue") // ✅ Must match the queue name from config
+    public void receiveMessage(CompanyCreatedEvent message) {
+        log.info("📩 [User-Service] Received Company Created Message: {}", message);
+
+        // ✅ Find the user
+        Optional<UserData> existingUser = userDataRepository.findById(message.getUserId());
+
+        // ❌ You cannot compare Optional with null
+        if (existingUser.isEmpty()) {
+            log.warn("⚠️ User with ID {} not found. Cannot associate company ID {}", 
+                     message.getUserId(), message.getCompanyId());
+            return;
+        }
+
+        // ✅ Safely update the user's company list
+        existingUser.ifPresent(user -> {
+            if (user.getCompanyIds() == null) {
+                user.setCompanyIds(new java.util.ArrayList<>());
+            }
+
+            user.getCompanyIds().add(message.getCompanyId());
+            userDataRepository.save(user);
+            log.info("✅ Updated user {} with new company ID {}", user.getId(), message.getCompanyId());
+        });
+
+        log.info("🎯 Finished processing Company Created Message for user ID: {}", message.getUserId());
+    }
 }

@@ -161,17 +161,17 @@ public class JobServiceImpl implements JobService {
 
 	@Override
 	public Job updateNumberCandidateApply(UUID jobId) {
-		log.info("Updating number of candidates applied for job ID: {}", jobId);
+		log.info("✅ Updating number of candidates applied for job ID: {}", jobId);
 		Optional<Job> jobOptional = jobRepository.findById(jobId);
 		if (jobOptional.isPresent()) {
 			Job job = jobOptional.get();
 			job.setNumberCandidateApply(job.getNumberCandidateApply() + 1);
 			jobRepository.save(job);
-			log.info("Number of candidates applied updated successfully for job ID: {}", jobId);
+			log.info("✅ Number of candidates applied updated successfully for job ID: {}", jobId);
 			return job;
 		} else {
-			log.error("Job with ID: {} not found", jobId);
-			throw new JobNotFoundException(ErrorCodeEnum.JOB_NOT_FOUND);}
+			log.error("❌ Job not found for JobId : {}", jobId);
+			return null;}
 	}
 
 	@Override

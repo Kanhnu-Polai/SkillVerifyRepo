@@ -21,6 +21,8 @@ import com.skillverify.applicationservice.dto.JobManagerAckDto.JobManagerAckDtoB
 import com.skillverify.applicationservice.entity.JobApplication;
 import com.skillverify.applicationservice.http.JobServiceEngine;
 import com.skillverify.applicationservice.http.NotificationEngine;
+import com.skillverify.applicationservice.messaging.ApplicationEventProducer;
+import com.skillverify.applicationservice.messaging.event.ApplicationCreatedEvent;
 import com.skillverify.applicationservice.repository.JobApplicationRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -34,6 +36,8 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 	private final JobApplicationRepository jobApplicationRepository;
 	private final NotificationEngine notificationEngine;
 	private final JobServiceEngine jobServiceEngine;
+	
+	private final ApplicationEventProducer applicationEventProducer;
 
 	@Override
 	public JobApplyResponseDto applyForJob(JobApplyDto dto) {
@@ -59,7 +63,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 		log.info("Created application {}", newApp.getId());
 
 		// 3) Notify other services
-    jobServiceEngine.updateCandidateCount(newApp.getJobId()); 
+   // jobServiceEngine.updateCandidateCount(newApp.getJobId()); 
 	    
 	    
 	    JobManagerAckDto ackDto = JobManagerAckDto.builder()
@@ -70,7 +74,23 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 	    		.resumeUrl(dto.getResumeUrl())
 	    		.build();
 	    
-	    jobServiceEngine.makeCallToJobManagerServiceToAddApplication(ackDto);
+	    ApplicationCreatedEvent   event = ApplicationCreatedEvent.builder()
+	    		.applicationId(newApp.getApplicationId())
+	    		.jobId(dto.getJobId())
+	    		.jobTitle(dto.getJobTitle())
+	    		.applicantEmail(dto.getJobSeekerEmail())
+	    		.resumeUrl(dto.getResumeUrl())
+	    		.appliedAt(newApp.getAppliedAt())
+	    		.status(JobStatus.CREATED.toString())
+	    		.build();
+	    		
+	
+	    
+	//    jobServiceEngine.makeCallToJobManagerServiceToAddApplication(ackDto);
+	    
+	    //Produce message to RabbitMQ
+	    applicationEventProducer.sendApplicationCreatedEvent(event);
+	    
 	    
 		return JobApplyResponseDto.builder().jobTitle(newApp.getJobTitle()).status(newApp.getStatus())
 				.appliedAt(newApp.getAppliedAt()).build();
