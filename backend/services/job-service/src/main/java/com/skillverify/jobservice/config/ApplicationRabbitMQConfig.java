@@ -38,6 +38,16 @@ public class ApplicationRabbitMQConfig {
         return BindingBuilder.bind(applicationQueue).to(applicationExchange).with(ROUTING_KEY);
     }
     
+    
+    @Bean
+    public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(ConnectionFactory connectionFactory,Jackson2JsonMessageConverter jackson2JsonMessageConverter ) {
+    	SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+    	factory.setConnectionFactory(connectionFactory);
+    	factory.setMessageConverter(jackson2JsonMessageConverter);
+    	factory.setDefaultRequeueRejected(false);
+    	return factory;
+    }
+    
 
     
 }

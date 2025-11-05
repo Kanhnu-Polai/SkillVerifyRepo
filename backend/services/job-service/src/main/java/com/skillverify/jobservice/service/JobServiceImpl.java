@@ -170,7 +170,7 @@ public class JobServiceImpl implements JobService {
 			log.info("✅ Number of candidates applied updated successfully for job ID: {}", jobId);
 			return job;
 		} else {
-			log.error("❌ Job not found for JobId : {}", jobId);
+			log.error("❌ Job not found for JobId : {} ", jobId);
 			return null;}
 	}
 
