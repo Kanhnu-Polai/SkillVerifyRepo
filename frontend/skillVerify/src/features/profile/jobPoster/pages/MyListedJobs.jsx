@@ -9,20 +9,34 @@ import {
   fetchJobsByPosterEmail,
   deleteJobById, 
 } from "../../../../redux/thunk/jobThunk";
+import { useNavigate } from "react-router-dom";
 
 
 const MyListedJobs = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
+
   const { jobs, loading, error } = useSelector((s) => s.jobs);
   const userEmail = useSelector((s) => s.auth.user?.email);
   const [selectedJob, setSelectedJob] = useState(null);
 
   useEffect(() => {
     if (userEmail) dispatch(fetchJobsByPosterEmail(userEmail));
+    
   }, [dispatch, userEmail]);
 
   /* ───────── Handlers ───────── */
-  const handleView = (job) => setSelectedJob(job);
+  const handleView = (job) => {
+
+    navigate("/profile/job-details",
+       { state: { job } }
+      
+    )
+    console.log("sfhshfhsjf")
+
+  }
+  
+
 
   const handleDelete = async (job) => {
     const ok = window.confirm(`Delete “${job.jobTitle}” @ ${job.companyName}?`);
@@ -45,7 +59,7 @@ const MyListedJobs = () => {
   return (
     <>
       {/* list */}
-      <div className="p-4 md:space-x-4 md:flex flex flex-col">
+      <div className="p-4 md:space-x-4 space-y-3 md:space-y-0 md:flex-row flex flex-col ">
         {jobs?.length ? (
           jobs.map((job) => (
             <JobBoxPoster
