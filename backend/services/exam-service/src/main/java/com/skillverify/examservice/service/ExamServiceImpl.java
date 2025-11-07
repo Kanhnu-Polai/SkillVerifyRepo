@@ -10,6 +10,7 @@ import com.skillverify.examservice.constant.ExamStatus;
 import com.skillverify.examservice.dto.ExamInitiateReqDto;
 import com.skillverify.examservice.dto.ExamInitiateResDto;
 import com.skillverify.examservice.entity.Exam;
+import com.skillverify.examservice.http.HttpEnginee;
 import com.skillverify.examservice.repository.ExamRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ExamServiceImpl implements ExamService {
 	
 	private final ExamRepository examRepository;
-	
+	private final HttpEnginee httpEnginee;
 	
 
 	@Override
@@ -73,7 +74,11 @@ public class ExamServiceImpl implements ExamService {
 		//step-2 : validate the application by calling application-service
 		
 		
+		
 		//step-3 : get the session details by calling session-service
+		
+		String sessionId = httpEnginee.getSessionId();
+		examInitiateResDto.setSessionId(sessionId);
 		//step-4 : get the exam details from exam-details-service
 		//step-5 : create exam entity and save it to exam table
 		
