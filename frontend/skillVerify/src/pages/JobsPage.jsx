@@ -8,14 +8,18 @@ import {fetchJobs} from "/src/apiManager/jobApi.js"
 import { timeAgo }     from "../utils/time";
 import { toast }       from "react-hot-toast";     // ensure react-hot-toast is installed
 import JobFilter from "../features/job/jobFilter/JobFilter";
+import { useNavigate } from "react-router-dom";
 
 
 export default function JobsPage() {
+  const isSaved = true
   const [jobs, setJobs]          = useState([]);
   const [selectedJob, setSelectedJob] = useState(null); // for details modal
   const [applyJob, setApplyJob]  = useState(null);      // full job object for résumé modal
   const [loading, setLoading]    = useState(true);
   const [error, setError]        = useState("");
+
+  const navigate = useNavigate();
 
   
   useEffect(() => {
@@ -30,6 +34,12 @@ export default function JobsPage() {
       }
     })();
   }, []);
+
+  const handleView = (job) => {
+  navigate("/job-info", {
+    state: { job }, // ✅ Pass the job object directly
+  });
+};
 
   /* --------- loading / error UI --------- */
   if (loading) {
@@ -51,8 +61,10 @@ export default function JobsPage() {
   /* --------- main page --------- */
   return (
     <div >
-        <JobFilter/>
-          
+      
+          <div className="hidden md:block">
+             <JobFilter/>
+          </div>
           
       <main className="min-h-screen bg-gray-50  px-4 sm:px-6 lg:px-8 mt-4">
         
@@ -74,7 +86,7 @@ export default function JobsPage() {
                     postedAgo: timeAgo(job.createdAt),
                     shortlisted: job.numberOfCandidatesShortlisted,
                   }}
-                  onView={() => setSelectedJob(job)}
+                  onView={() => handleView(job)}
                   onApply={() => setApplyJob(job)}      // ✅ pass full job
                   onSave={() => console.log("Save", job.jobId)}
                 />
@@ -86,6 +98,7 @@ export default function JobsPage() {
 
       {/* job details modal */}
       {selectedJob && (
+        
         <JobDetailsModal
           job={selectedJob}
           onClose={() => setSelectedJob(null)}
@@ -101,7 +114,15 @@ export default function JobsPage() {
         />
       )}
 
-      <Footer />
+     <div className="mb-18">
+       <Footer />
+     </div>
+      <div className="fixed md:hidden bottom-0 left-0 w-full backdrop-blur-md border-t border-gray-200 justify-between flex md:justify-end items-center py-3 px-4 z-10 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] space-x-2.5">
+              {/* Save Button */}
+              
+      
+               <JobFilter/>
+            </div>
     </div>
   );
 }

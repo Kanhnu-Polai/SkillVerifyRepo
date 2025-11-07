@@ -69,7 +69,7 @@ const JobFilter = ({ onFilterChange }) => {
   const handleModalToggle = () => setOpenModal(!openModal);
 
   return (
-    <div className="w-full bg-white/80 backdrop-blur-md rounded-2xl shadow-[0_4px_16px_rgba(0,0,0,0.05)] border border-gray-100 p-3 md:p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4 transition-all duration-300 ">
+    <div className="w-full  backdrop-blur-xl rounded-2xl shadow-[0_4px_16px_rgba(0,0,0,0.05)] border border-gray-100 p-3 md:p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4 transition-all duration-300 ">
       
       <div className="hidden md:flex items-center justify-between w-full gap-6">
        
@@ -98,6 +98,7 @@ const JobFilter = ({ onFilterChange }) => {
           }}
         >
           <FilterList />
+        
         </IconButton>
 
         <FormControl size="small" sx={{ minWidth: 140 }}>

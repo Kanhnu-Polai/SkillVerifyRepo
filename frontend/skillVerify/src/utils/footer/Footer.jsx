@@ -3,6 +3,8 @@ import { FaFacebookF, FaLinkedinIn, FaGithub, FaEnvelope } from 'react-icons/fa'
 import { FaXTwitter } from "react-icons/fa6";
 import { MdDeveloperMode } from "react-icons/md";
 import { FaCode, FaLaptopCode } from "react-icons/fa";
+import { SiInternetcomputer } from "react-icons/si";
+import { FaDev } from "react-icons/fa";
 
 
 const Footer = () => {
@@ -71,6 +73,20 @@ const Footer = () => {
               <FaEnvelope />
             </a>
           </div>
+          <div className="flex justify-end space-x-1 relative group">
+  <a
+    href="https://kanhnu-polai.netlify.app/"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <FaDev className="text-4xl text-yellow-400 cursor-pointer" />
+  </a>
+
+  {/* Tooltip */}
+  <div className="absolute bottom-full mb-2 right-0 hidden group-hover:block bg-gray-800 text-pink-500 font-mono font-medium text-xs px-2 py-1 rounded-md shadow-lg whitespace-nowrap">
+    Developer Info
+  </div>
+</div>
         </div>
       </div>
 

@@ -10,6 +10,10 @@ import {
   BellRing,
   BarChart2,
 } from "lucide-react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination, Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
 
 /* ---------------- Single Card ---------------- */
 const FeatureCard = ({ title, description, Icon }) => (
@@ -17,16 +21,17 @@ const FeatureCard = ({ title, description, Icon }) => (
     tabIndex={0}
     className="
       group relative flex flex-col items-center text-center
-      bg-white/70 backdrop-blur-sm
-      rounded-2xl border border-gray-200
+      bg-white/90 backdrop-blur-md
+      border border-gray-200
+      rounded-2xl pb-14 px-4
       md:px-6 md:py-8 md:min-w-80 md:min-h-60
-      px-3 py-4 min-w-60 min-h-40
+      min-w-60 min-h-40
       transition-all duration-300 ease-out
-      shadow-[0_4px_10px_rgb(0_0_0/0.05)]
-      hover:shadow-[0_8px_24px_rgb(0_0_0/0.14)]
-      hover:-translate-y-1.5
-      hover:bg-gradient-to-br hover:from-gray-800 hover:via-gray-900 hover:to-black
-      hover:text-white
+      shadow-[0_3px_8px_rgb(0_0_0/0.06)]
+      hover:shadow-[0_10px_25px_rgb(0_0_0/0.18)]
+     
+      hover:bg-gradient-to-br hover:from-gray-900 hover:via-gray-800 hover:to-black
+     
       focus-visible:ring-2 focus-visible:ring-blue-500/70
     "
   >
@@ -35,18 +40,22 @@ const FeatureCard = ({ title, description, Icon }) => (
       {title}
     </div>
 
-    {/* Subtle halo behind icon */}
+    {/* Glow behind icon */}
     <div className="absolute -top-6 inset-x-0 flex justify-center">
-      <div className="w-24 h-24 rounded-full bg-blue-50 blur-xl opacity-70 group-hover:opacity-100 transition" />
+      <div className="w-24 h-24 rounded-full bg-blue-200 blur-2xl opacity-50 group-hover:opacity-80 transition" />
     </div>
 
     {/* Icon bubble */}
-    <div className="relative z-10 mb-5 flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-tr from-blue-600 to-violet-600 text-white shadow-md group-hover:scale-110 group-hover:rotate-6 transition-all">
-      <Icon size={28} strokeWidth={1.5} />
+    <div className="relative z-10 mb-5 flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 to-violet-600 text-white shadow-md group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+      <Icon size={28} strokeWidth={1.4} />
     </div>
 
-    <h3 className="relative z-10 mb-2 text-[15px] md:text-lg font-semibold">{title}</h3>
-    <p className="relative z-10 md:text-sm text-[11px] leading-relaxed">{description}</p>
+    <h3 className="relative z-10 mb-2 text-[15px] md:text-lg font-semibold tracking-wide group-hover:text-yellow-500 transition">
+      {title}
+    </h3>
+    <p className="relative z-10 md:text-sm text-[11px] leading-relaxed  text-gray-600 group-hover:text-gray-100 transition">
+      {description}
+    </p>
   </div>
 );
 
@@ -110,16 +119,30 @@ const FeatureSection = () => {
   ];
 
   return (
-    <section className="bg-gradient-to-b from-white via-sky-50 to-blue-100/30 py-14 px-4 sm:px-6 lg:px-8">
-      <h2 className="mb-10 text-lg text-center md:text-3xl font-bold text-gray-800">
-        Why&nbsp;SkillVerify?
+    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white via-gray-50 to-gray-100">
+      <h2 className="mb-12 text-lg text-center md:text-3xl font-bold text-gray-800 tracking-tight">
+        Why&nbsp;<span className="text-blue-600">SkillVerify?</span>
       </h2>
 
-      <div className="mx-auto  grid max-w-7xl gap-10 place-items-center sm:grid-cols-2 lg:grid-cols-3">
+      {/* Swiper Slider */}
+      <Swiper
+        modules={[Pagination, Autoplay]}
+        spaceBetween={24}
+        pagination={{ clickable: true }}
+        autoplay={{ delay: 3000, disableOnInteraction: false }}
+        breakpoints={{
+          320: { slidesPerView: 1 },
+          640: { slidesPerView: 2 },
+          1024: { slidesPerView: 3 },
+        }}
+        className="max-w-7xl mx-auto"
+      >
         {features.map((f, i) => (
-          <FeatureCard key={i} {...f} />
+          <SwiperSlide key={i}>
+            <FeatureCard {...f} />
+          </SwiperSlide>
         ))}
-      </div>
+      </Swiper>
     </section>
   );
 };

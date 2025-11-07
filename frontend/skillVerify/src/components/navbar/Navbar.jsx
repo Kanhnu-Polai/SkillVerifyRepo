@@ -27,11 +27,10 @@ const Navbar = () => {
     } font-medium`;
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("rememberMe");
+     localStorage.clear(); 
     dispatch(logout());
     navigate("/");
+     window.location.reload();
   };
 
   return (

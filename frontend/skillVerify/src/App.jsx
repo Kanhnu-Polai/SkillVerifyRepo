@@ -21,6 +21,7 @@ import Spotlight from './pages/Spotlight';
 import SplashScreen from './components/SplashScreen';
 import GovtJobs from './pages/GovtJobs';
 import GovtJobDetails from './features/govt/GovtJobDetails';
+import JobInfoPage from './pages/JobInfoPage';
 
 
 
@@ -92,6 +93,7 @@ const App = () => {
         <Route path='/spotlight' element={<Spotlight></Spotlight>}></Route>
         <Route path="/signup"  element={<Signup />} />
         <Route path='/govt-job-details' element = {<GovtJobDetails/>}/>
+        <Route path='/job-info' element = {<JobInfoPage/>} />
        
 
         
