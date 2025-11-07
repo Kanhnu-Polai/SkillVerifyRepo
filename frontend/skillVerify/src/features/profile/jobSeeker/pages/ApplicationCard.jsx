@@ -1,27 +1,13 @@
-import React from "react";
-import { HiOutlineCheck } from "react-icons/hi";
-import { LuNotepadText } from "react-icons/lu";
-import { AiOutlineTeam } from "react-icons/ai";
-import { VscGitStashApply } from "react-icons/vsc";
-import { FaCheckCircle, FaClock, FaCalendarAlt, FaUserCheck } from "react-icons/fa";
-
+import React, { useState } from "react";
 import { FiUser } from "react-icons/fi";
-import { FaMoneyBillWave, FaBriefcase } from "react-icons/fa";
-
-import {
-  Briefcase,
-  Calendar,
-  Clock,
-  MapPin,
-  UserCheck,
-  BadgeCheck,
-  BrainCircuit,
-  Building2,
-} from "lucide-react";
-import JobStatusProgress from "../componets/JobStatusProgress";
+import { LuNotepadText } from "react-icons/lu";
+import { BadgeCheck, Calendar, Clock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const ApplicationCard = ({
+
   applicationId,
+  job,
   company,
   companyLogo,
   position,
@@ -32,186 +18,175 @@ const ApplicationCard = ({
   interview = {},
   examTopics = [],
 }) => {
-  const data = [
-  { name: "Applied", status: "completed" },
-  { name: "Round 1", status: "completed" },
-  { name: "Round 2", status: "failed" },
-  { name: "Interview", status: "pending" },
-  { name: "Shortlisted", status: "pending" },
-]
+  const [showMore, setShowMore] = useState(false);
+  const displayedTopics = showMore ? examTopics : examTopics.slice(0, 3);
+
+  const navigate = useNavigate()
+
+  const handleJobDetails = ()=>{
+    navigate("/job-info",{
+      state:{job}
+    })
+
+  }
   return (
-    <div className="bg-white w-fit  shadow border-2  rounded-[16px] p-4 sm:p-6 sm:my-6 m-3 ">
-      {/* Header Row */}
-      <div className="flex items-center justify-between border-b pb-4 mb-4">
+    <div
+      className="
+        bg-white shadow-md border rounded-2xl p-5
+        hover:shadow-xl hover:border-blue-400
+        transition-all duration-300 flex flex-col justify-between
+      "
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between border-b pb-3 mb-3 " onClick={handleJobDetails}>
         <div className="flex items-center gap-3">
-          {companyLogo ? (
-            <img
-              src={companyLogo}
-              alt={company}
-              className="w-12 h-12 rounded-full object-cover border"
-            />
-          ) : (
-            <div className="w-12 h-12 bg-gray-200 text-gray-700 flex items-center justify-center rounded-full text-lg font-bold">
-              {company?.[0] || "C"}
+          <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border">
+            {companyLogo ? (
+              <img
+                src={companyLogo}
+                alt={company}
+                className="max-h-full max-w-full object-contain"
+              />
+            ) : (
+              <span className="text-gray-600 font-semibold text-lg">
+                {company?.[0] || "C"}
+              </span>
+            )}
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-gray-800">{company}</h3>
+            <p className="text-sm text-gray-600">{position}</p>
+          </div>
+        </div>
+        <span className="text-xs text-gray-400 font-mono">#{applicationId}</span>
+      </div>
+
+      {/* Exam Section */}
+      <div className="bg-gradient-to-r from-indigo-700 to-blue-600 text-white rounded-xl p-4 mb-4">
+        <p className="font-medium mb-3 text-sm uppercase tracking-wide border-b border-white/30 pb-1">
+          Exam Overview
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Round 1 */}
+          {interview.round1 && (
+            <div className="bg-white text-gray-800 rounded-xl p-3 flex flex-col justify-between min-h-[15rem] shadow-sm">
+              <div>
+                <p className="font-semibold text-green-700 flex items-center gap-2 text-sm mb-2">
+                  <BadgeCheck className="w-4 h-4" /> Round 1:{" "}
+                  {interview.round1.title}
+                </p>
+
+                <div className="space-y-1 text-xs">
+                  <p className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-blue-500" />
+                    <span>Last Date:</span>
+                    <span className="font-semibold text-red-600">
+                      {interview.round1.date}
+                    </span>
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-blue-500" />
+                    <span>Duration:</span>
+                    <span>{interview.round1.time}</span>
+                  </p>
+
+                  <div className="mt-1">
+                    <p className="flex items-center gap-2">
+                      <LuNotepadText className="text-blue-500" />
+                      <span>Topics:</span>
+                    </p>
+                    <ul className="list-disc list-inside pl-4">
+                      {displayedTopics.map((topic, i) => (
+                        <li key={i} className="text-gray-700">
+                          {topic}
+                        </li>
+                      ))}
+                    </ul>
+
+                    {examTopics.length > 3 && (
+                      <button
+                        className="text-blue-600 text-xs mt-1 hover:underline"
+                        onClick={() => setShowMore(!showMore)}
+                      >
+                        {showMore ? "Show less" : "Show more"}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end pt-3">
+                <button
+                  className="bg-blue-600 text-white text-xs px-3 py-1.5 rounded-md hover:bg-blue-700 transition"
+                  onClick={() => {
+                    const queryParams = new URLSearchParams({
+                      company,
+                      position,
+                      topics: JSON.stringify(examTopics),
+                    }).toString();
+                    window.open(
+                      `http://localhost:5174/?${queryParams}`,
+                      "_blank"
+                    );
+                  }}
+                >
+                  Start Exam
+                </button>
+              </div>
             </div>
           )}
-          <div>
-            <h3 className="md:text-xl font-semibold text-gray-800 text-sm">{company}</h3>
-            <p className="md:text-md text-gray-600 text-sm ">{position}</p>
-          </div>
-        </div>
-        <span className="text-xs font-mono text-gray-400">
-          #{applicationId}
-        </span>
-      </div>
 
-      {/* Gradient Section */}
-      <div className="bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-xl p-4 mb-4">
-        <p className="font-medium mb-2 md:text-md text-sm">Exam Overview</p>
-        <div className="flex items-center mb-4 ">
-          <div className="bg-white text-indigo-500 rounded-2xl p-3 mr-4">
-            <BrainCircuit className="md:h-6 md:w-6 h-3 w-3" />
-          </div>
-          <div>
-            <p className="text-sm md:text-lg font-bold">{examTopics?.length || 0}</p>
-            <p className=" text-xs md:text-sm text-indigo-100">Topics</p>
-          </div>
-          <JobStatusProgress stages = {data}></JobStatusProgress>
-        </div>
+          {/* Round 2 */}
+          {interview.round2 && (
+            <div className="bg-white text-gray-800 rounded-xl p-3 flex flex-col justify-between min-h-[15rem] shadow-sm">
+              <div>
+                <p className="font-semibold text-purple-700 flex items-center gap-2 text-sm mb-2">
+                  <BadgeCheck className="w-4 h-4" /> Round 2:{" "}
+                  {interview.round2.title}
+                </p>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm text-indigo-100">
-          <div className="text-center flex flex-col  justify-center space-y-1 items-center">
-            <p className=" text-xs md:text-lg font-semibold">{experience}</p>
-            <p className=" md:text-xs"><FaBriefcase className="text-sm md:text-xl" /></p>
-          </div>
-          <div className="text-center  flex flex-col  justify-center space-y-1 items-center">
-            <p className="text-xs md:text-lg font-semibold">{salary}</p>
-            <p className="text-xs"><FaMoneyBillWave  className="text-sm md:text-xl" /></p>
-          </div>
-          <div className="text-center flex flex-col  justify-center space-y-1 items-center">
-            <p className="text-xs md:text-lg font-semibold">{appliedOn}</p>
-            <p className="text-xs"><Calendar className="text-xs md:text-xl"></Calendar></p>
-          </div>
-          <div className="text-center flex flex-col  justify-center space-y-1 items-center">
-            <h1 className="text-xs md:text-lg tracking-wide text-gradient bg-gradient-to-r from-sky-400 to-amber-300 bg-clip-text text-transparent ">
-         {status}
-        </h1>
-            <p className="text-xs"><FaCheckCircle className="text-xs md:text-xl" /></p>
-          </div>
+                <div className="text-xs space-y-1">
+                  <p>
+                    <FiUser className="inline-block mr-1 text-blue-500" />
+                    Interviewer:{" "}
+                    <span className="font-semibold text-indigo-600">
+                      SkillVerify AI
+                    </span>
+                  </p>
+                  <p>
+                    <Clock className="inline-block mr-1 w-4 h-4 text-blue-500" />
+                    Duration: 30 min
+                  </p>
+                  <p>
+                    <LuNotepadText className="inline-block mr-1 text-blue-500" />
+                    Topics: <ul className="list-disc list-inside pl-4">
+                      <li >Resume Based</li>
+                      <li> Experience</li>
+                      <li>Comapany Info</li>
+                    </ul>
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex justify-end pt-3">
+                <button className="bg-indigo-600 text-white text-xs px-3 py-1.5 rounded-md hover:bg-indigo-700 transition">
+                  Start Interview
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Interview Rounds */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-700 text-xs">
-        {interview.round1 && (
-          <div className="rounded-xl border p-4 bg-gray-100 border-gray-300">
-            <p className=" font-semibold text-green-600 flex items-center gap-2 mb-2">
-              <BadgeCheck className="w-4 h-4" /> Round 1:{" "}
-              {interview.round1.title}
-            </p>
-            <div className="space-y-1 pl-6 ">
-              {interview.round1.date && (
-                <p className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
-                  <span>Last Date to Attempt Exam :</span>{" "}
-                  <span className="text-red-600 font-semibold">
-                    {interview.round1.date}
-                  </span>
-                </p>
-              )}
-              {interview.round1.time && (
-                <p className="flex items-center gap-2 ">
-                  <Clock className="w-4 h-4" /> <span>Duration : </span>{" "}
-                  <span>{interview.round1.time}</span>
-                </p>
-              )}
-              {interview.round1.location && (
-                <p className="flex items-center gap-2">
-                  <LuNotepadText className="flex-shrink-0" />
-                  <span className="flex-shrink-0">Topics :</span>
-                  <span
-                    className="truncate whitespace-nowrap overflow-hidden text-gray-600"
-                    title={examTopics.join(", ")}
-                  >
-                    {examTopics.join(", ")}
-                  </span>
-                </p>
-              )}
-              <div className=" flex justify-end">
-               <button
-  className="bg-blue-600 text-white px-2 mt-2 py-1  rounded-md cursor-pointer hover:bg-blue-700"
-  onClick={() => {
-    const queryParams = new URLSearchParams({
-      company,
-      position,
-      topics: JSON.stringify(examTopics),
-    }).toString();
-
-    // Open exam center (running on port 5174)
-    window.open(`http://localhost:5174/?${queryParams}`, "_blank");
-  }}
->
-  Start Exam
-</button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {interview.round2 && (
-          <div className="rounded-xl border p-4 bg-gray-100  border-gray-300  ">
-            <p className="text-sm font-semibold text-blue-600 flex items-center gap-2 mb-2">
-              <BadgeCheck className="w-4 h-4" /> Round 2:{" "}
-              {interview.round2.title}
-            </p>
-            <div className="pl-6 text-sm text-gray-600 flex flex-col space-y-1  ">
-              <div className="flex  space-x-1  ">
-                <span className="text-lg">
-                  <FiUser></FiUser>
-                </span>{" "}
-                <span>Interviewer :</span>
-                <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
-                  SkillVerify AI
-                </span>
-              </div>
-              <div className="flex  space-x-1 ">
-                <span className="flex items-center space-x-1  ">
-                  <span>
-                    <Clock className="w-4 h-4" />
-                  </span>{" "}
-                  <span>Duration : </span> <span>30 Min</span>
-                </span>
-              </div>
-              <div className="flex  space-x-1 items-center">
-                <span><LuNotepadText></LuNotepadText> </span>
-                <span className="flex-shrink-0">Topics :</span>
-                <span>
-                  Based on your Submitted Resume.
-                </span>
-              </div>
-            </div>
-            <div></div>
-
-            <div className=" flex justify-end">
-              <button className="bg-blue-600 text-white px-2 mt-2 py-1 text-sm rounded-md cursor-pointer hover:bg-blue-700">
-                Start Interview
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Footer Buttons */}
-      <div className="mt-6 flex justify-end items-center">
-        
-        <div className="flex gap-2 text-xs">
-          <button className="px-4 py-1.5 rounded-md border border-blue-500 text-blue-600 hover:bg-blue-50 transition">
-            Job Details
-          </button>
-          <button className="px-4 py-1.5 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100 transition">
-            Add to Calendar
-          </button>
-        </div>
+      {/* Footer */}
+      <div className="flex justify-end gap-2 text-xs">
+        <button onClick={handleJobDetails} className="px-4 py-1.5 rounded-md border border-blue-500 text-blue-600 hover:bg-blue-50 transition">
+          Job Details
+        </button>
+        <button className="px-4 py-1.5 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100 transition">
+          Practice
+        </button>
       </div>
     </div>
   );

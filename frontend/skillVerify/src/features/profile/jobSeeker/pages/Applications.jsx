@@ -1,15 +1,14 @@
-// components/account/profileNavComponent/Applications.jsx
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import ApplicationCard from './ApplicationCard';
-import { Loader2 } from 'lucide-react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import ApplicationCard from "./ApplicationCard";
+import { Loader2 } from "lucide-react";
+import { useSelector } from "react-redux";
 
 const Applications = () => {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
-   const {userData} = useSelector((state)=>state.userData)
-   const userEmail = userData.email
+  const { userData } = useSelector((state) => state.userData);
+  const userEmail = userData?.email;
 
   useEffect(() => {
     const fetchApplications = async () => {
@@ -19,67 +18,57 @@ const Applications = () => {
         );
         setApplications(response.data.body || []);
       } catch (error) {
-        console.error('Error fetching applications:', error);
+        console.error("Error fetching applications:", error);
       } finally {
         setLoading(false);
       }
     };
-
-    fetchApplications();
-  }, []);
+    if (userEmail) fetchApplications();
+  }, [userEmail]);
 
   return (
-    <div className=' md:w-2xl w-full  '>
-      
-
+    <div className="w-full px-4 py-6">
       {loading ? (
-        <div className="flex items-center gap-2 text-blue-600">
+        <div className="flex items-center gap-2 text-blue-600 justify-center">
           <Loader2 className="animate-spin" />
-          <span>Loading applications...</span>
+          <span>Loading your applications...</span>
         </div>
       ) : applications.length === 0 ? (
-        <p className="text-gray-500">You haven’t applied to any jobs yet.</p>
+        <p className="text-gray-500 text-center py-10">
+          You haven’t applied to any jobs yet.
+        </p>
       ) : (
-        <div className="grid  gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {applications.map((job, index) => {
             const interview = {
               round1: job.round1Required
                 ? {
-                    title: 'Online Exam',
-                    date: '18 July 2025',
-                    time: '10:00 AM - 11:00 AM',
-                    location: 'Remote (Google Meet)',
+                    title: "Online Exam",
+                    date: "22 July 2025",
+                    time: "2 Hours",
+                    location: "Remote",
                   }
                 : null,
               round2: job.round2Required
-                ? {
-                    title: 'Technical Interview',
-                  }
+                ? { title: "AI HR Interview" }
                 : null,
             };
 
             return (
               <ApplicationCard
-              
-  applicationId={`APP${String(index + 1).padStart(3, '0')}`}
-  companyLogo={job.companyPhotoLink}
-  company={job.companyName || 'N/A'}
-  position={job.jobTitle || 'N/A'}
-  experience={`${job.experience || 0}+ yrs`}
-  salary={'₹12 LPA'}
-  appliedOn={job.lastDateToApply}
-  status={job.status || 'Applied'}
-  examTopics={job.examTopics || ['Java', 'DSA', 'Spring Boot']}
-  interview={{
-    round1: {
-      title: 'Online Exam',
-      date: '22 July 2025',
-      time: '2 Hours',
-      location: 'Remote',
-    },
-    round2: job.round2Required ? { title: 'HR Interview' } : null,
-  }}
-/>
+              job={job}
+                key={index}
+                applicationId={`APP${String(index + 1).padStart(3, "0")}`}
+                companyLogo={job.companyPhotoLink}
+                company={job.companyName || "N/A"}
+                position={job.jobTitle || "N/A"}
+                experience={`${job.experience || 0}+ yrs`}
+                salary={"₹12 LPA"}
+                appliedOn={job.lastDateToApply}
+                status={job.status || "Applied"}
+                examTopics={job.examTopics || ["Java", "DSA", "Spring Boot", "OOPs", "SQL"]}
+                interview={interview}
+              />
             );
           })}
         </div>
