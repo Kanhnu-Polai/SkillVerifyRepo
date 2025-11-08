@@ -4,11 +4,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.skillverify.examservice.constant.ExamStatus;
 import com.skillverify.examservice.dto.ExamInitiateReqDto;
 import com.skillverify.examservice.dto.ExamInitiateResDto;
+import com.skillverify.examservice.dto.SessionRequest;
+import com.skillverify.examservice.dto.SessionResponseDTO;
 import com.skillverify.examservice.entity.Exam;
 import com.skillverify.examservice.http.HttpEnginee;
 import com.skillverify.examservice.repository.ExamRepository;
@@ -64,7 +67,7 @@ public class ExamServiceImpl implements ExamService {
 		log.info("✅ Exam initiated successfully for examId:{}",exam.getExamId());
 		
 		
-		ExamInitiateResDto examInitiateResDto = toExamInitiateResDto(exam);
+		
 		
 		log.info("✅ Exam initiation response prepared for examId:{}",exam.getExamId());
 				
@@ -77,9 +80,24 @@ public class ExamServiceImpl implements ExamService {
 		
 		//step-3 : get the session details by calling session-service
 		
-		String sessionId = httpEnginee.getSessionId();
-		examInitiateResDto.setSessionId(sessionId);
+		SessionRequest request = SessionRequest.builder()
+				.candidateId(String.valueOf(examInitiateReqDto.getUserId()))
+				.applicationId(String.valueOf(examInitiateReqDto.getApplicationId()))
+				.examId(String.valueOf(exam.getExamId()))
+				.status(com.skillverify.examservice.constant.SessionStatusEnum.INITIATED)
+				.sessionDurationMinutes(90L)
+				.build();
+		
+		ResponseEntity<SessionResponseDTO> response = httpEnginee.getSessionInfo(request);
+		log.info("✅ Received session details with session id:{}",response.getBody().getSessionId());
+		ExamInitiateResDto examInitiateResDto = toExamInitiateResDto(exam, response.getBody().getSessionId(),
+				response.getBody().getMobileUploadUrl(),response.getBody().getDesktopUploadUrl(),
+				response.getBody().getScreenshotsUploadUrl());
+		
+		
+		
 		//step-4 : get the exam details from exam-details-service
+		
 		//step-5 : create exam entity and save it to exam table
 		
 		log.info("✅ Sending exam initiation response for examId:{}",exam.getExamId());
@@ -90,14 +108,18 @@ public class ExamServiceImpl implements ExamService {
 	
 	
 	
-	private ExamInitiateResDto toExamInitiateResDto(Exam exam) {
+	private ExamInitiateResDto toExamInitiateResDto(Exam exam ,String sessionId,String mobileUploadUrl,
+			String desktopUploadUrl,String screenshotsUploadUrl) {
 		return ExamInitiateResDto.builder()
 				.examId(exam.getExamId())
 				.examStatus(exam.getExamStatus())
 				.applicationId(exam.getApplicationId())
 				.userId(exam.getUserId())
 				.duration(exam.getDuration())
-				.sessionId(exam.getSessionId())
+				.sessionId(sessionId)
+				.mobileUploadUrl(mobileUploadUrl)
+				.desktopUploadUrl(desktopUploadUrl)
+				.screenshotsUploadUrl(screenshotsUploadUrl)
 				.build();
 		
 	}
