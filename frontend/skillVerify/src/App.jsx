@@ -22,6 +22,7 @@ import SplashScreen from './components/SplashScreen';
 import GovtJobs from './pages/GovtJobs';
 import GovtJobDetails from './features/govt/GovtJobDetails';
 import JobInfoPage from './pages/JobInfoPage';
+import ExamPage from './examSystem/pages/ExamPage';
 
 
 
@@ -95,8 +96,14 @@ const App = () => {
         <Route path='/govt-job-details' element = {<GovtJobDetails/>}/>
         <Route path='/job-info' element = {<JobInfoPage/>} />
        
-
         
+       
+
+        {
+          localStorage.getItem("role") && 
+           <Route path='/exam' element = {<ExamPage/>} />
+
+        }
     
 
         {/* ✅ Protected Routes */}
@@ -104,6 +111,7 @@ const App = () => {
           <Route path="/profile/*" element={<ProfilePage />} />
           {/* <Route  path="/profile/*" element = {<ProfileLayout></ProfileLayout>} ></Route> */}
           <Route path='/create_job' element={<CreateJobPage></CreateJobPage>}></Route>
+         
          
 
         </Route>

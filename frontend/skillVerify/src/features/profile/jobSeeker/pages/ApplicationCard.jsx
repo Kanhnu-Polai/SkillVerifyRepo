@@ -5,7 +5,6 @@ import { BadgeCheck, Calendar, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const ApplicationCard = ({
-
   applicationId,
   job,
   company,
@@ -21,14 +20,32 @@ const ApplicationCard = ({
   const [showMore, setShowMore] = useState(false);
   const displayedTopics = showMore ? examTopics : examTopics.slice(0, 3);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const handleJobDetails = ()=>{
-    navigate("/job-info",{
-      state:{job}
-    })
+  const [examInfo, setExamInfo] = useState({
+    userId: localStorage.getItem("userId"),
+    jobInfo: job,
+  });
 
-  }
+  const handleJobDetails = () => {
+    navigate("/profile/job-info", {
+      state: { job },
+    });
+  };
+
+  const handleStartExam = (e) => {
+    e.stopPropagation(); // ✅ prevent parent div click
+    if (!examInfo.userId || !examInfo.jobInfo) {
+      console.warn("Missing examInfo data:", examInfo);
+      return;
+    }
+
+    // ✅ Navigate safely with correct state
+    navigate("/exam", {
+      state: { examInfo },
+    });
+  };
+
   return (
     <div
       className="
@@ -38,7 +55,10 @@ const ApplicationCard = ({
       "
     >
       {/* Header */}
-      <div className="flex items-center justify-between border-b pb-3 mb-3 " onClick={handleJobDetails}>
+      <div
+        className="flex items-center justify-between border-b pb-3 mb-3"
+        onClick={handleJobDetails}
+      >
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border">
             {companyLogo ? (
@@ -119,17 +139,7 @@ const ApplicationCard = ({
               <div className="flex justify-end pt-3">
                 <button
                   className="bg-blue-600 text-white text-xs px-3 py-1.5 rounded-md hover:bg-blue-700 transition"
-                  onClick={() => {
-                    const queryParams = new URLSearchParams({
-                      company,
-                      position,
-                      topics: JSON.stringify(examTopics),
-                    }).toString();
-                    window.open(
-                      `http://localhost:5174/?${queryParams}`,
-                      "_blank"
-                    );
-                  }}
+                  onClick={handleStartExam}
                 >
                   Start Exam
                 </button>
@@ -160,10 +170,11 @@ const ApplicationCard = ({
                   </p>
                   <p>
                     <LuNotepadText className="inline-block mr-1 text-blue-500" />
-                    Topics: <ul className="list-disc list-inside pl-4">
-                      <li >Resume Based</li>
-                      <li> Experience</li>
-                      <li>Comapany Info</li>
+                    Topics:
+                    <ul className="list-disc list-inside pl-4">
+                      <li>Resume Based</li>
+                      <li>Experience</li>
+                      <li>Company Info</li>
                     </ul>
                   </p>
                 </div>
@@ -181,7 +192,10 @@ const ApplicationCard = ({
 
       {/* Footer */}
       <div className="flex justify-end gap-2 text-xs">
-        <button onClick={handleJobDetails} className="px-4 py-1.5 rounded-md border border-blue-500 text-blue-600 hover:bg-blue-50 transition">
+        <button
+          onClick={handleJobDetails}
+          className="px-4 py-1.5 rounded-md border border-blue-500 text-blue-600 hover:bg-blue-50 transition"
+        >
           Job Details
         </button>
         <button className="px-4 py-1.5 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100 transition">

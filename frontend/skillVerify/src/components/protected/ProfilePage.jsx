@@ -21,6 +21,7 @@ import ProfileNav from "../../features/profile/componets/ProfileInfo";
 import Company from "../../features/profile/jobPoster/pages/Company";
 import CompanyDetails from "../../features/company/componets/CompanyDetails";
 import  JobDetailsPage  from "../../features/job/pages/JobDetailsPage";
+import ExamPage from "../../examSystem/pages/ExamPage";
 
 const ProfilePage = () => {
   const { userData } = useSelector((state) => state.userData);
@@ -40,6 +41,7 @@ const ProfilePage = () => {
                 <Route path="resume-manager" element={<ResumeManager />} />
                 <Route path="settings" element={<Settings />} />
                 <Route path="bio" element={<ProfileNav></ProfileNav>} />
+                <Route path ="profile/exam" element={<ExamPage/>}/>
                
               </Routes>
             </div>
