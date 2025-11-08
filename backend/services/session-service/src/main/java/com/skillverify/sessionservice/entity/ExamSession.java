@@ -24,7 +24,9 @@ public class ExamSession {
 	private Instant sessionCreationTime;
 	private Instant sessionDestroyTime;
 	private Long sessionDurationMinutes;
-	private String proctoringDataUrl;
+	private String mobileProctoringDataUrl;
+	private String desktopCameraProctoringDataUrl;
+	private String screenRecordingProctoringDataUrl;
 	private String mobileCameraProctoringDataUrl;
 	private Instant lastActivityTime;
 	

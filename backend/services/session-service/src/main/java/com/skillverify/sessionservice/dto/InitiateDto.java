@@ -11,7 +11,6 @@ public class InitiateDto {
 	private String applicationId;
 	private String examId;
 	private SessionStatusEnum status ;
-	private String proctoringDataUrl;
-	private String mobileCameraProctoringDataUrl;
+	
 	private Long sessionDurationMinutes;
 }

@@ -1,15 +1,18 @@
 package com.skillverify.sessionservice.service;
 
 import java.time.Instant;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.skillverify.sessionservice.contant.SessionStatusEnum;
+import com.skillverify.sessionservice.dto.CloudinaryUrlResponse;
 import com.skillverify.sessionservice.dto.InitiateDto;
 import com.skillverify.sessionservice.dto.SessionInitiateRespons;
 import com.skillverify.sessionservice.entity.ExamSession;
 import com.skillverify.sessionservice.repository.SessionRepository;
+import com.skillverify.sessionservice.uploader.CloudinaryFolderService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +25,7 @@ public class SessionServiceImpl implements SessionService{
 	
 	
 	private final SessionRepository sessionRepository;
+	private final CloudinaryFolderService cloudFolderService;
 
 	@Override
 	public SessionInitiateRespons initiateSession(InitiateDto initiateDto) {
@@ -45,13 +49,20 @@ public class SessionServiceImpl implements SessionService{
 		}
 		log.info("✅ No existing session found. Creating new session.");
 		
+		// create folders in cloudinary
+		CloudinaryUrlResponse urls= cloudFolderService.createSessionFolders(initiateDto.getExamId() );
+		log.info("✅ Created folders in Cloudinary for Exam ID: {}. Upload URLs: {}", initiateDto.getExamId(), urls);
+		
+		// map and save
+		
 		ExamSession newSession = ExamSession.builder()
 				.candidateId(initiateDto.getCandidateId())
 				.applicationId(initiateDto.getApplicationId())
 				.examId(initiateDto.getExamId())
 				.status(SessionStatusEnum.INITIATED)
-				.proctoringDataUrl(initiateDto.getProctoringDataUrl())
-				.mobileCameraProctoringDataUrl(initiateDto.getMobileCameraProctoringDataUrl())
+				.mobileProctoringDataUrl(urls.getMobileUploadUrl())
+				.desktopCameraProctoringDataUrl(urls.getDesktopUploadUrl())
+				.screenRecordingProctoringDataUrl(urls.getScreenshotsUploadUrl())
 				.sessionCreationTime(Instant.now())
 				.sessionDurationMinutes(initiateDto.getSessionDurationMinutes())
 				.build();
@@ -61,6 +72,9 @@ public class SessionServiceImpl implements SessionService{
 		SessionInitiateRespons sessionResponse = SessionInitiateRespons.builder()
 				.sessionId(savedSession.getSessionId())
 				.status(savedSession.getStatus())
+				.mobileUploadUrl(savedSession.getMobileProctoringDataUrl())
+				.desktopUploadUrl(savedSession.getDesktopCameraProctoringDataUrl())
+				.screenshotsUploadUrl(savedSession.getScreenRecordingProctoringDataUrl())
 				.build();
 		log.info("✅ Exam Session initiated successfully with Session ID: {}", savedSession.getSessionId());
 				
