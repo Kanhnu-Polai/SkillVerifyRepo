@@ -5,6 +5,12 @@ const UserPhoto = ({ examInfo, setOpenExamOverview, setOpenExamInitiaton, setOpe
   const [cameraModule, setCameraModule] = useState(true);
   const cameraRef = useRef();
 
+
+  const initateData = {
+    
+
+  }
+
   const handlePrev = () => {
     if (cameraRef.current) {
       cameraRef.current.stopCamera(); // stop the camera manually
@@ -17,7 +23,7 @@ const UserPhoto = ({ examInfo, setOpenExamOverview, setOpenExamInitiaton, setOpe
   return (
     <div className="w-full max-w-3xl bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
       <div className="bg-gray-50 rounded-xl p-5 border border-gray-200 mb-6">
-        {cameraModule && <CandidatePhotoCapture ref={cameraRef} />}
+        {cameraModule && <CandidatePhotoCapture  examInfo={examInfo} ref={cameraRef} />}
       </div>
 
       <p className="mt-4 text-sm text-red-600 font-medium bg-red-50 border border-red-200 p-3 rounded-lg mb-3">

@@ -1,11 +1,14 @@
 package com.skillverify.examservice.service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.skillverify.examservice.constant.ExamStatus;
 import com.skillverify.examservice.dto.ExamInitiateReqDto;
@@ -27,15 +30,33 @@ public class ExamServiceImpl implements ExamService {
 	private final ExamRepository examRepository;
 	private final HttpEnginee httpEnginee;
 	
+	private final CloudinaryService cloudinaryService;
+	
 
 	@Override
-	public ExamInitiateResDto initiateExam(ExamInitiateReqDto examInitiateReqDto) {
+	public ExamInitiateResDto initiateExam(ExamInitiateReqDto examInitiateReqDto,MultipartFile files) {
 		log.info("✅ Exam initiation request received for userId:{}",examInitiateReqDto.getUserId());
 		
 		// check if userID and applicationId already available or not
 		// if available, then return the existing exam details
 		Optional<Exam> existingExam = examRepository.findByUserIdAndApplicationId(
 				examInitiateReqDto.getUserId(), examInitiateReqDto.getApplicationId());
+		
+		
+		// Save image in cloudinary 
+		 Map<String, String> uploadResult = null;
+		
+		try {
+			log.info("Uploading file to Cloudinary for exam initiation, userId:{}",examInitiateReqDto.getUserId());
+			uploadResult =  cloudinaryService.uploadFile(files, "exam-uploads");
+			log.info("✅ File uploaded to Cloudinary successfully for userId:{} , URL: {}",
+					examInitiateReqDto.getUserId(),uploadResult.get("url"));
+		} catch (IOException e) {
+			log.error("❌ Failed to upload file to Cloudinary for userId:{}",examInitiateReqDto.getUserId());
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	   
 		
 		
 		if(existingExam.isPresent()) {
@@ -58,6 +79,7 @@ public class ExamServiceImpl implements ExamService {
 				.examDetailId(examInitiateReqDto.getExamDetailId())
 				.applicationId(examInitiateReqDto.getApplicationId())
 				.userId(examInitiateReqDto.getUserId())
+				.candidateImageUrl(uploadResult != null ? uploadResult.get("url") : null)
 				.createdAt(LocalDateTime.now())
 				.examStatus(ExamStatus.INITIATED)
 				.updatedAt(LocalDateTime.now())
@@ -92,7 +114,7 @@ public class ExamServiceImpl implements ExamService {
 		log.info("✅ Received session details with session id:{}",response.getBody().getSessionId());
 		ExamInitiateResDto examInitiateResDto = toExamInitiateResDto(exam, response.getBody().getSessionId(),
 				response.getBody().getMobileUploadUrl(),response.getBody().getDesktopUploadUrl(),
-				response.getBody().getScreenshotsUploadUrl());
+				response.getBody().getScreenshotsUploadUrl(),uploadResult.get("url"));
 		
 		
 		
@@ -109,7 +131,7 @@ public class ExamServiceImpl implements ExamService {
 	
 	
 	private ExamInitiateResDto toExamInitiateResDto(Exam exam ,String sessionId,String mobileUploadUrl,
-			String desktopUploadUrl,String screenshotsUploadUrl) {
+			String desktopUploadUrl,String screenshotsUploadUrl,String candidateImageUrl) {
 		return ExamInitiateResDto.builder()
 				.examId(exam.getExamId())
 				.examStatus(exam.getExamStatus())
@@ -120,6 +142,7 @@ public class ExamServiceImpl implements ExamService {
 				.mobileUploadUrl(mobileUploadUrl)
 				.desktopUploadUrl(desktopUploadUrl)
 				.screenshotsUploadUrl(screenshotsUploadUrl)
+				.candidateImageUrl(candidateImageUrl)
 				.build();
 		
 	}

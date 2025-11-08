@@ -1,8 +1,14 @@
-import React, { useRef, useState, useEffect, forwardRef, useImperativeHandle } from "react";
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import { Camera, UploadCloud, RefreshCcw } from "lucide-react";
-import axios from "axios";
+import { initiateExam } from "../apiManager/examService";
 
-const CandidatePhotoCapture = forwardRef(({ userId, onPhotoUpload }, ref) => {
+const CandidatePhotoCapture = forwardRef(({ examInfo, onExamInitiated }, ref) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [photo, setPhoto] = useState(null);
@@ -22,9 +28,7 @@ const CandidatePhotoCapture = forwardRef(({ userId, onPhotoUpload }, ref) => {
 
   const stopCamera = () => {
     const stream = videoRef.current?.srcObject;
-    if (stream) {
-      stream.getTracks().forEach((track) => track.stop());
-    }
+    if (stream) stream.getTracks().forEach((t) => t.stop());
     setCameraOn(false);
   };
 
@@ -50,28 +54,27 @@ const CandidatePhotoCapture = forwardRef(({ userId, onPhotoUpload }, ref) => {
     startCamera();
   };
 
-  const uploadPhoto = async () => {
+  const uploadAndInitiateExam = async () => {
     if (!photo) return alert("Please capture a photo first.");
-    setLoading(true);
+    if (!examInfo?.userId || !examInfo?.applicationId || !examInfo?.examDetailId)
+      return alert("Missing required exam details!");
 
+    setLoading(true);
     try {
       const blob = await fetch(photo).then((res) => res.blob());
-      const formData = new FormData();
-      formData.append("photo", blob, `${userId}_photo.png`);
-      formData.append("userId", userId);
+      const file = new File([blob], `${examInfo.userId}_photo.png`, {
+        type: "image/png",
+      });
 
-      const response = await axios.post(
-        "http://localhost:8080/api/exam/photo/upload",
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
+      // ✅ Call the initiateExam service (multipart)
+      const response = await initiateExam(examInfo, file);
 
-      setLoading(false);
-      alert("Photo uploaded successfully!");
-      if (onPhotoUpload) onPhotoUpload(response.data);
+      alert("✅ Exam Initiated Successfully!");
+      if (onExamInitiated) onExamInitiated(response);
     } catch (error) {
-      console.error("Upload failed:", error);
-      alert("Error uploading photo.");
+      console.error("❌ Error during exam initiation:", error);
+      alert("Error initiating exam.");
+    } finally {
       setLoading(false);
     }
   };
@@ -82,13 +85,14 @@ const CandidatePhotoCapture = forwardRef(({ userId, onPhotoUpload }, ref) => {
 
   return (
     <div className="bg-white shadow-xl rounded-2xl p-6 border border-gray-200 w-full max-w-md mx-auto text-center">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">
+      <h2 className="text-xl font-semibold text-gray-800 mb-1">
         Candidate Photo Verification
       </h2>
+     
 
       <div className="relative bg-gray-100 rounded-xl overflow-hidden border border-gray-300 h-64 flex justify-center items-center">
         {!photo ? (
-          <video ref={videoRef} autoPlay className="w-full h-full object-cover"></video>
+          <video ref={videoRef} autoPlay className="w-full h-full object-cover" />
         ) : (
           <img src={photo} alt="Captured" className="w-full h-full object-cover" />
         )}
@@ -118,12 +122,12 @@ const CandidatePhotoCapture = forwardRef(({ userId, onPhotoUpload }, ref) => {
         {photo && (
           <>
             <button
-              onClick={uploadPhoto}
+              onClick={uploadAndInitiateExam}
               disabled={loading}
               className="flex justify-center items-center bg-amber-600 text-white py-2 px-4 rounded-md hover:bg-amber-700 transition disabled:opacity-50"
             >
-              <UploadCloud className="w-5 h-5 mr-2" />{" "}
-              {loading ? "Uploading..." : "Upload Photo"}
+              <UploadCloud className="w-5 h-5 mr-2" />
+              {loading ? "Processing..." : "Upload & Initiate Exam"}
             </button>
             <button
               onClick={retakePhoto}

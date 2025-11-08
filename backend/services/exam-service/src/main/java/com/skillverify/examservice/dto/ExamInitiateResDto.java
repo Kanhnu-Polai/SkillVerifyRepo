@@ -18,6 +18,7 @@ public class ExamInitiateResDto {
 	private String sessionId;
 	private String duration;
 	private UUID examId;
+	private String candidateImageUrl;
 	private String mobileUploadUrl;
 	private String desktopUploadUrl;
 	private String screenshotsUploadUrl;

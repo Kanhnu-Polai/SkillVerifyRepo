@@ -39,6 +39,7 @@ public class Exam {
 	private UUID proctoringId;
 	private UUID examDetailId;
 	private UUID questionSetId;
+	private String candidateImageUrl;
 	
 	
 	
