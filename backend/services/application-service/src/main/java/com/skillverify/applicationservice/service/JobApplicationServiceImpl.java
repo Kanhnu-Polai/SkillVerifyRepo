@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -201,6 +202,46 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 		});
 		log.info("Jobs with statuses: {}", fetchedJobs);
 		return fetchedJobs;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	@Override
+	public ResponseEntity<String> getApplicationByEmailAndJobId(String email, UUID jobId) {
+		log.info("Inside service layer for email: {} and jobId: {}", email, jobId);
+
+	  JobApplication applicationOpt = jobApplicationRepository.findByEmailAndJobId(email, jobId);
+
+	    if (applicationOpt!=null) {
+	        String appId = applicationOpt.getApplicationId();
+	        log.info("✅ Found Application ID: {}", appId);
+	        return ResponseEntity.ok(appId);
+	    } else {
+	        log.warn("⚠️ No application found for email {} and jobId {}", email, jobId);
+	        return ResponseEntity.notFound().build();
+	    }
 	}
 
 }

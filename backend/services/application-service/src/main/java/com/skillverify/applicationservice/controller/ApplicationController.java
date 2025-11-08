@@ -1,5 +1,7 @@
 package com.skillverify.applicationservice.controller;
 
+import java.util.UUID;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -69,6 +71,14 @@ public class ApplicationController {
 	@GetMapping("/{applicationId}")
 	public String getAllApplications( @PathVariable String applicationId) {
 		return "List of all applications";
+	}
+	
+	@GetMapping("/application/{email}/{jobId}")
+	public ResponseEntity<?> getApplicationIdByEmailAndJobId( @PathVariable String email,@PathVariable UUID jobId){
+		log.info("Received request to find applicaton Id for user : {}",email);
+		
+		ResponseEntity<String> id = jobApplicationService.getApplicationByEmailAndJobId(email, jobId);
+		return  id;
 	}
 
 }

@@ -11,5 +11,6 @@ import com.skillverify.applicationservice.dto.JobApplyResponseDto;
 public interface JobApplicationService {
     JobApplyResponseDto applyForJob(JobApplyDto jobApplyDto);
 ResponseEntity<?> getJobApplicationIdByEmail(String email);
+ResponseEntity<String> getApplicationByEmailAndJobId(String email,UUID jobId);
   
 }
