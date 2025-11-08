@@ -1,5 +1,6 @@
 package com.skillverify.examservice.http;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -15,22 +16,20 @@ import lombok.extern.slf4j.Slf4j;
 
 public class HttpEnginee {
 	
-	
 	private final RestClient restClient;
-	
-	public HttpEnginee(RestClient restClient) {
-		this.restClient = restClient;
-	}
-	
-	// create job josn object to call session service
-	
-	
+    private final String sessionServiceUrl;
+
+    public HttpEnginee(RestClient restClient,
+                       @Value("${session.service.url}") String sessionServiceUrl) {
+        this.restClient = restClient;
+        this.sessionServiceUrl = sessionServiceUrl;
+    }
 	
 	public ResponseEntity<SessionResponseDTO> getSessionInfo(SessionRequest session) {
 		log.info("🔗 Making HTTP call to Session Service to get session info");
 		
 		ResponseEntity<SessionResponseDTO> response = restClient.post()
-				.uri("http://localhost:9096/api/v1/sessions/initiate")
+				.uri(sessionServiceUrl+"/initiate")
 				.body(session)
 				.retrieve()
 				.toEntity(SessionResponseDTO.class);
