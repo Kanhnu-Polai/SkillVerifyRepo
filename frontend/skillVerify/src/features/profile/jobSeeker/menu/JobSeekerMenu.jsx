@@ -20,6 +20,7 @@ export default function JobSeekerMenu({ handleLogout }) {
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
+  const { userData } = useSelector((state) => state.userData);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -69,7 +70,9 @@ export default function JobSeekerMenu({ handleLogout }) {
       },
     })}
   >
-    {userInitial}
+   <div>
+    <img src={userData?.photoUrl} alt="" />
+   </div>
   </Avatar>
 </IconButton>
         </Tooltip>
