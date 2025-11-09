@@ -40,7 +40,7 @@ const Navbar = () => {
           {/* Logo */}
           <div className="flex items-center gap-2">
             <FaShieldAlt className="text-blue-950 w-7 h-7 md:w-12 md:h-12" />
-            <div>
+            <div className="md:ml-1 ">
               <NavLink to="/" className="flex items-center gap-1">
                 <span className="text-lg md:text-2xl antialiased font-extrabold  text-blue-600 hover:text-purple-600 tracking-tight">
                   <span className="text-blue-500"><span className=" text-blue-700 text-2xl md:text-4xl">S</span>KILL<span className="md:text-4xl text-2xl text-blue-700">V</span>ERIFY</span>

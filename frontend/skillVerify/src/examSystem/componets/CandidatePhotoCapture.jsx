@@ -8,12 +8,15 @@ import React, {
 import { Camera, UploadCloud, RefreshCcw } from "lucide-react";
 import { initiateExam } from "../apiManager/examService";
 
-const CandidatePhotoCapture = forwardRef(({ examInfo, onExamInitiated }, ref) => {
+const CandidatePhotoCapture = forwardRef(({ examInfo, onExamInitiated ,initiateExamRes}, ref) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [photo, setPhoto] = useState(null);
   const [cameraOn, setCameraOn] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [info,setInfo] = useState(false);
+
+ 
 
   const startCamera = async () => {
     try {
@@ -56,7 +59,7 @@ const CandidatePhotoCapture = forwardRef(({ examInfo, onExamInitiated }, ref) =>
 
   const uploadAndInitiateExam = async () => {
     if (!photo) return alert("Please capture a photo first.");
-    if (!examInfo?.userId || !examInfo?.applicationId || !examInfo?.examDetailId)
+    if (!examInfo?.userId || !examInfo?.userEmail || !examInfo?.jobId)
       return alert("Missing required exam details!");
 
     setLoading(true);
@@ -68,6 +71,13 @@ const CandidatePhotoCapture = forwardRef(({ examInfo, onExamInitiated }, ref) =>
 
       // ✅ Call the initiateExam service (multipart)
       const response = await initiateExam(examInfo, file);
+      console.log(response)
+      initiateExamRes(response)
+      localStorage.setItem("examInfo", JSON.stringify(response));
+      if(response.sessionId){
+        setInfo(true)
+
+      }
 
       alert("✅ Exam Initiated Successfully!");
       if (onExamInitiated) onExamInitiated(response);
@@ -135,6 +145,11 @@ const CandidatePhotoCapture = forwardRef(({ examInfo, onExamInitiated }, ref) =>
             >
               <RefreshCcw className="w-5 h-5 mr-2" /> Retake Photo
             </button>
+            <div>
+              {
+                info && <p className="text-green-600 font-medium">Uploaded Successfully</p>
+              }
+            </div>
           </>
         )}
       </div>

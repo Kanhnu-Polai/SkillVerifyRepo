@@ -40,12 +40,17 @@ public class CloudinaryService {
     
 
     private String detectResourceType(MultipartFile file) {
+        if (file == null || file.getContentType() == null) {
+            log.warn("⚠️ File is null or missing content type. Using 'auto' as fallback.");
+            return "auto";
+        }
+
         String contentType = file.getContentType();
-        if (contentType != null && contentType.startsWith("image/")) {
+        if (contentType.startsWith("image/")) {
             return "image";
         } else if ("application/pdf".equals(contentType)) {
             return "raw";
         }
-        return "auto"; // fallback
+        return "auto";
     }
 }

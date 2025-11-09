@@ -3,6 +3,7 @@ import axios from "axios";
 const EXAM_BASE_URL = import.meta.env.VITE_SKILLVERIFY_EXAM_SERVICE_BASE_URL;
 
 export const initiateExam = async (examInfo, file) => {
+  console.log(file)
   try {
     const formData = new FormData();
 
@@ -14,7 +15,7 @@ export const initiateExam = async (examInfo, file) => {
 
     // Append file if provided
     if (file) {
-      formData.append("files", file);
+      formData.append("file", file);
     }
 
     // Send multipart/form-data request
