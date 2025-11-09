@@ -10,5 +10,6 @@ import lombok.Data;
 public class ApplicationServiceResponse {
 	
 	private UUID applicationId;
+	private boolean found;
 
 }
