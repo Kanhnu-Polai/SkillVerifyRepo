@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 @Builder
 public class ApplicationCreatedEvent {
-	private String applicationId;
+	private UUID applicationId;
     private UUID jobId;
     private String jobTitle;
     private String applicantEmail;

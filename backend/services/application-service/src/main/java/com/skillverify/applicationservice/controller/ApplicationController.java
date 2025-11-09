@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.skillverify.applicationservice.dto.ApplicationIDFoundResponse;
 import com.skillverify.applicationservice.dto.JobApplyDto;
 import com.skillverify.applicationservice.dto.JobApplyResponseDto;
 import com.skillverify.applicationservice.service.JobApplicationService;
@@ -77,8 +78,8 @@ public class ApplicationController {
 	public ResponseEntity<?> getApplicationIdByEmailAndJobId( @PathVariable String email,@PathVariable UUID jobId){
 		log.info("Received request to find applicaton Id for user : {}",email);
 		
-		ResponseEntity<String> id = jobApplicationService.getApplicationByEmailAndJobId(email, jobId);
-		return  id;
+		ResponseEntity<ApplicationIDFoundResponse> response = jobApplicationService.getApplicationByEmailAndJobId(email, jobId);
+		return  response;
 	}
 
 }

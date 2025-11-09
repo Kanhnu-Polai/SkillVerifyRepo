@@ -12,7 +12,7 @@ import lombok.Data;
 public class JobManagerAckDto {
 	
 	private UUID jobId;
-	private String applicationId;
+	private UUID applicationId;
 	private String applicantEmail;
 	private JobStatus status;
 	private String resumeUrl;

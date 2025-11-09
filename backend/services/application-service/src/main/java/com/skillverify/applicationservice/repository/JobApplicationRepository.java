@@ -22,5 +22,5 @@ public interface JobApplicationRepository extends JpaRepository<JobApplication, 
     List<UUID> findJobIdsByEmail(@Param("email") String email);
     
     @Query("SELECT a.applicationId FROM JobApplication a WHERE a.email = :email AND a.jobId = :jobId")
-    Optional<UUID> findApplicationIdByEmailAndJobId(@Param("email") String email, @Param("jobId") String jobId);
+    Optional<UUID> findApplicationIdByEmailAndJobId(@Param("email") String email, @Param("jobId") UUID jobId);
 }

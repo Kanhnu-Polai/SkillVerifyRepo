@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.skillverify.applicationservice.constant.JobStatus;
 import com.skillverify.applicationservice.dto.ApplicationDto;
+import com.skillverify.applicationservice.dto.ApplicationIDFoundResponse;
 import com.skillverify.applicationservice.dto.FetchedJobDto;
 import com.skillverify.applicationservice.dto.JobApplyDto;
 import com.skillverify.applicationservice.dto.JobApplyResponseDto;
@@ -162,7 +163,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 	    }
 	    List<ApplicationDto> applicationDtos = applications.stream()
 	            .map(app -> ApplicationDto.builder()
-	                    .applicationId(UUID.fromString(app.getApplicationId()))
+	                    .applicationId(app.getApplicationId())
 	                    .jobId(app.getJobId())
 	                    .status(app.getStatus())
 	                    .appliedAt(app.getAppliedAt())
@@ -229,18 +230,26 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 
 
 	@Override
-	public ResponseEntity<String> getApplicationByEmailAndJobId(String email, UUID jobId) {
+	public ResponseEntity<ApplicationIDFoundResponse> getApplicationByEmailAndJobId(String email, UUID jobId) {
 		log.info("Inside service layer for email: {} and jobId: {}", email, jobId);
 
 	  JobApplication applicationOpt = jobApplicationRepository.findByEmailAndJobId(email, jobId);
 
 	    if (applicationOpt!=null) {
-	        String appId = applicationOpt.getApplicationId();
+	        UUID appId = applicationOpt.getApplicationId();
+	        ApplicationIDFoundResponse response = ApplicationIDFoundResponse.builder()
+	        		.applicationId(appId)
+	        		.found(true)
+	        		.build();
 	        log.info("✅ Found Application ID: {}", appId);
-	        return ResponseEntity.ok(appId);
+	        return  ResponseEntity.ok(response);
 	    } else {
 	        log.warn("⚠️ No application found for email {} and jobId {}", email, jobId);
-	        return ResponseEntity.notFound().build();
+	        ApplicationIDFoundResponse response = ApplicationIDFoundResponse.builder()
+	        		.applicationId(null)
+	        		.found(false)
+	        		.build();
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 	    }
 	}
 

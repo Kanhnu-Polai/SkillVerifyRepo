@@ -25,7 +25,7 @@ public class JobApplication {
 
   
     @Column(name = "application_id", nullable = false, updatable = false, unique = true, length = 64)
-    private String applicationId;
+    private UUID applicationId;
 
     @Column(name = "job_id", nullable = false, columnDefinition = "BINARY(16)")
     private UUID jobId;
