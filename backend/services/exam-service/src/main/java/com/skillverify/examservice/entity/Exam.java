@@ -29,7 +29,7 @@ public class Exam {
 	
 	@Id
 	@GeneratedValue
-	@Column(columnDefinition = "CHAR(36)")
+	@Column(columnDefinition = "BINARY(16)")
 	private UUID examId;
 	
 	

@@ -53,7 +53,7 @@ public class JobApplication {
     private void prePersist() {
         if (applicationId == null) {
             // 👉 For “APP-001” style IDs, inject a custom generator here
-            applicationId = UUID.randomUUID().toString();
+            applicationId = UUID.randomUUID();
         }
         if (appliedAt == null) {
             appliedAt = LocalDateTime.now();
