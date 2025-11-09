@@ -42,8 +42,8 @@ const Navbar = () => {
             <FaShieldAlt className="text-blue-950 w-7 h-7 md:w-12 md:h-12" />
             <div>
               <NavLink to="/" className="flex items-center gap-1">
-                <span className="text-lg md:text-2xl antialiased font-extrabold tracking-wider text-blue-600 hover:text-purple-600">
-                  <span className="text-emerald-400">SKILL</span><span>Verify</span>
+                <span className="text-lg md:text-2xl antialiased font-extrabold  text-blue-600 hover:text-purple-600 tracking-tight">
+                  <span className="text-blue-500"><span className=" text-blue-700 text-2xl md:text-4xl">S</span>KILL<span className="md:text-4xl text-2xl text-blue-700">V</span>ERIFY</span>
                 </span>
                 <sup className="text-[6px] md:text-[10px] text-indigo-900 font-bold antialiased ">
                   v.0.0.1
