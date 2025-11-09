@@ -1,9 +1,10 @@
 package com.skillverify.sessionservice.entity;
 
 import java.time.Instant;
+import java.util.UUID;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
 import com.skillverify.sessionservice.contant.SessionStatusEnum;
 
 import lombok.Builder;
@@ -16,10 +17,10 @@ public class ExamSession {
 	
 	
 	@Id
-	private String sessionId;
-	private String candidateId;
-	private String applicationId;
-	private String examId;
+	private UUID sessionId;
+	private Long candidateId;
+	private UUID applicationId;
+	private UUID examId;
 	private SessionStatusEnum status ;
 	private Instant sessionCreationTime;
 	private Instant sessionDestroyTime;

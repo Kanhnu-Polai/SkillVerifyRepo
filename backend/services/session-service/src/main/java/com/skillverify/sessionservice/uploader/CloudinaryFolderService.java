@@ -1,5 +1,7 @@
 package com.skillverify.sessionservice.uploader;
 
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 
 import com.cloudinary.Cloudinary;
@@ -18,7 +20,7 @@ public class CloudinaryFolderService {
 	
 	
 	
-	public CloudinaryUrlResponse createSessionFolders(String sessionId) {
+	public CloudinaryUrlResponse createSessionFolders(UUID sessionId) {
 	    log.info("Creating folders for session: {}", sessionId);
 
 	    try {

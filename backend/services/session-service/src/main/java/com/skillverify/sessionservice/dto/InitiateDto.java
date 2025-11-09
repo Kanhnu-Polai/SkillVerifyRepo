@@ -1,5 +1,7 @@
 package com.skillverify.sessionservice.dto;
 
+import java.util.UUID;
+
 import com.skillverify.sessionservice.contant.SessionStatusEnum;
 
 import lombok.Data;
@@ -7,9 +9,9 @@ import lombok.Data;
 
 public class InitiateDto {
 	
-	private String candidateId;
-	private String applicationId;
-	private String examId;
+	private Long candidateId;
+	private UUID applicationId;
+	private UUID examId;
 	private SessionStatusEnum status ;
 	
 	private Long sessionDurationMinutes;

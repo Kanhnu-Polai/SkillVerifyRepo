@@ -3,6 +3,7 @@ package com.skillverify.sessionservice.service;
 import java.time.Instant;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -36,15 +37,18 @@ public class SessionServiceImpl implements SessionService{
 		// 2. Map InitiateDto to ExamSession entity
 		// 3. Save the ExamSession entity to the database
 		log.info("🔍 Checking for existing session for Exam ID: {} and Candidate ID: {}", initiateDto.getExamId(), initiateDto.getCandidateId());
-		Optional<ExamSession> existingSession = sessionRepository.findByExamIdAndCandidateId(
-				initiateDto.getExamId(), initiateDto.getCandidateId());
+		ExamSession existingSession = sessionRepository.findByExamIdAndCandidateId(initiateDto.getExamId(),initiateDto.getCandidateId());
 		
-		if (existingSession.isPresent()) {
+		if (existingSession != null) {
 			log.info("⚠️ Existing session found for Exam ID: {} and Candidate ID: {}", initiateDto.getExamId(), initiateDto.getCandidateId());
 			SessionInitiateRespons response = SessionInitiateRespons.builder()
-					.sessionId(existingSession.get().getSessionId())
-					.status(existingSession.get().getStatus())
+					.sessionId(existingSession.getSessionId())
+					.status(existingSession.getStatus())
+					.mobileUploadUrl(existingSession.getMobileCameraProctoringDataUrl())
+					.desktopUploadUrl(existingSession.getDesktopCameraProctoringDataUrl())
+					.screenshotsUploadUrl(existingSession.getScreenRecordingProctoringDataUrl())
 					.build();
+					
 			return response;
 		}
 		log.info("✅ No existing session found. Creating new session.");
@@ -56,6 +60,7 @@ public class SessionServiceImpl implements SessionService{
 		// map and save
 		
 		ExamSession newSession = ExamSession.builder()
+				.sessionId(UUID.randomUUID())
 				.candidateId(initiateDto.getCandidateId())
 				.applicationId(initiateDto.getApplicationId())
 				.examId(initiateDto.getExamId())
