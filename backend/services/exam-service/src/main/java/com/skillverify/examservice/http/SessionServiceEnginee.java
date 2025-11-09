@@ -14,12 +14,12 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 
-public class HttpEnginee {
+public class SessionServiceEnginee {
 	
 	private final RestClient restClient;
     private final String sessionServiceUrl;
 
-    public HttpEnginee(RestClient restClient,
+    public SessionServiceEnginee(RestClient restClient,
                        @Value("${session.service.url}") String sessionServiceUrl) {
         this.restClient = restClient;
         this.sessionServiceUrl = sessionServiceUrl;

@@ -9,14 +9,15 @@ import lombok.Data;
 
 public class ExamInitiateReqDto {
 
-	@NotNull(message = "Application ID cannot be null")
-	private UUID applicationId;
 	
-	@NotNull(message = "Exam Detail ID cannot be null")
-	private UUID examDetailId;
+	@NotNull(message = "JobId ID cannot be null")
+	private UUID jobId;
 	
 	@NotNull(message = "User ID cannot be null")
 	private Long userId;
+	
+	@NotNull(message = "User email cannot be null")
+	private String userEmail;
 	
 
 } 

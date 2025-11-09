@@ -12,10 +12,10 @@ import lombok.Data;
 public class ExamInitiateResDto {
 	
 	private UUID applicationId;
-	private UUID examDetailId;
+	
 	private Long userId;
 	private ExamStatus examStatus;
-	private String sessionId;
+	private UUID sessionId;
 	private String duration;
 	private UUID examId;
 	private String candidateImageUrl;

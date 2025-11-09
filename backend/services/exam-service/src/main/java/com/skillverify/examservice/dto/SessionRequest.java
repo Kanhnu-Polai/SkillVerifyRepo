@@ -1,5 +1,7 @@
 package com.skillverify.examservice.dto;
 
+import java.util.UUID;
+
 import com.skillverify.examservice.constant.SessionStatusEnum;
 
 import lombok.Builder;
@@ -10,11 +12,11 @@ import lombok.Data;
 public class SessionRequest {
 	
 
-	private String candidateId;
-	private String applicationId;
+	private Long candidateId;
+	private UUID applicationId;
 	private String examId;
 	private SessionStatusEnum status ;
 	
-	private Long sessionDurationMinutes;
+	private int sessionDurationMinutes;
 	
 }

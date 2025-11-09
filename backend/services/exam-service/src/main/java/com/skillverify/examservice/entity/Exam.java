@@ -37,7 +37,7 @@ public class Exam {
 	private Long userId;
 	private UUID questionBankId;
 	private UUID proctoringId;
-	private UUID examDetailId;
+	
 	private UUID questionSetId;
 	private String candidateImageUrl;
 	
@@ -50,7 +50,7 @@ public class Exam {
 	@Enumerated(EnumType.STRING)
 	private ExamStatus examStatus;
 	
-	private String sessionId;
+	private UUID sessionId;
 	private String cheatingPercentage;
 	
 	private LocalDateTime startTime;
