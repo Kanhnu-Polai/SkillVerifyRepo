@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import ExamOverview from "../componets/ExamOverview";
 import ExamInitiation from "../componets/ExamInitiation";
 import UserPhoto from "../componets/UserPhoto";
+import AllowCamera from "../componets/AllowCamera";
 
 const ExamPage = () => {
   const location = useLocation();
@@ -15,6 +16,7 @@ const ExamPage = () => {
   const[openExamInitiaton,setOpenExamInitiaton] = useState(false)
 
    const[openPhotoModal,setOpenPhotoModal] = useState(false)
+   const[openAllowCamera,setOpenAllowCamera] = useState(false)
 
   return (
     <div className="bg-sky-600 min-h-screen flex flex-col">
@@ -33,7 +35,11 @@ const ExamPage = () => {
        }
 
        {
-        openPhotoModal && <UserPhoto examInfo={examInfo} setOpenExamOverview= {setOpenExamOverview} setOpenExamInitiaton = {setOpenExamInitiaton} setOpenPhotoModal = {setOpenPhotoModal}/>
+        openPhotoModal && <UserPhoto examInfo={examInfo} setOpenExamOverview= {setOpenExamOverview} setOpenExamInitiaton = {setOpenExamInitiaton} setOpenPhotoModal = {setOpenPhotoModal} setOpenAllowCamera = {setOpenAllowCamera}/>
+       }
+
+       {
+        openAllowCamera && <AllowCamera/>
        }
       </div>
     </div>

@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import CandidatePhotoCapture from "./CandidatePhotoCapture";
 import { useNavigate } from "react-router-dom";
 
-const UserPhoto = ({ examInfo, setOpenExamOverview, setOpenExamInitiaton, setOpenPhotoModal }) => {
+const UserPhoto = ({ examInfo, setOpenExamOverview, setOpenExamInitiaton, setOpenPhotoModal,setOpenAllowCamera }) => {
   const [cameraModule, setCameraModule] = useState(true);
   const cameraRef = useRef();
 
@@ -63,7 +63,9 @@ const UserPhoto = ({ examInfo, setOpenExamOverview, setOpenExamInitiaton, setOpe
         initiateExamRes.applicationId?<button
           className="bg-red-600 min-w-32 hover:bg-yellow-700 cursor-pointer text-white font-semibold px-8 py-3 rounded-lg transition duration-300 shadow-md"
           onClick={()=>{
+            
             naviagte(-1)
+          
           }}
         >
           Cancel
@@ -75,12 +77,26 @@ const UserPhoto = ({ examInfo, setOpenExamOverview, setOpenExamInitiaton, setOpe
         </button>
        }
         
-        <button
+        {
+          initiateExamRes.applicationId?<button
           className="bg-green-600 hover:bg-green-700 min-w-32 cursor-pointer text-white font-semibold px-8 py-3 rounded-lg transition duration-300 shadow-md"
+          onClick={() =>{
+            setOpenExamInitiaton(false)
+            setOpenPhotoModal(false)
+            setOpenAllowCamera(true)
+            
+
+          }}
+        >
+          Next
+        </button>:<button
+          className="bg-green-600 hover:bg-green-700 min-w-32  text-white font-semibold px-8 py-3 rounded-lg transition duration-300 shadow-md cursor-not-allowed"
           onClick={() => alert("Exam Started!")}
         >
           Next
         </button>
+        }
+        
       </div>
     </div>
   );
