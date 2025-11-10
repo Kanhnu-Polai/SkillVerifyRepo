@@ -21,8 +21,8 @@ const FeatureCard = ({ title, description, Icon }) => (
     tabIndex={0}
     className="
       group relative flex flex-col items-center text-center
-      bg-white/90 backdrop-blur-md
-      border border-gray-200
+      backdrop-blur-md
+      border bg-white/90 border-gray-200
       rounded-2xl pb-14 px-4
       md:px-6 md:py-8 md:min-w-80 md:min-h-60
       min-w-60 min-h-40
@@ -42,7 +42,7 @@ const FeatureCard = ({ title, description, Icon }) => (
 
     {/* Glow behind icon */}
     <div className="absolute -top-6 inset-x-0 flex justify-center">
-      <div className="w-24 h-24 rounded-full bg-blue-200 blur-2xl opacity-50 group-hover:opacity-80 transition" />
+      <div className="w-24 h-24 rounded-full blur-2xl opacity-50 group-hover:opacity-80 transition" />
     </div>
 
     {/* Icon bubble */}
@@ -119,7 +119,7 @@ const FeatureSection = () => {
   ];
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white via-gray-50 to-gray-100">
+    <section className="py-16 px-4 sm:px-6 lg:px-8 ">
       <h2 className="mb-12 text-lg text-center md:text-3xl font-bold text-gray-800 tracking-tight">
         Why&nbsp;<span className="text-blue-600">SkillVerify?</span>
       </h2>

@@ -73,7 +73,6 @@ const CandidatePhotoCapture = forwardRef(({ examInfo, onExamInitiated ,initiateE
       const response = await initiateExam(examInfo, file);
       console.log(response)
       initiateExamRes(response)
-      localStorage.setItem("examInfo", JSON.stringify(response));
       if(response.sessionId){
         setInfo(true)
 

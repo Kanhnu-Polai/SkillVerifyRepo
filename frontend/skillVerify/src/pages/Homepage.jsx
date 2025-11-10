@@ -13,7 +13,7 @@ import CallToAction from '../components/home/CallToAction'
 
 const Homepage = () => {
   return <>
-  <div className="bg-gradient-to-b from-white via-sky-50 to-blue-100/30 min-h-screen">
+  <div className="bg-white min-h-screen">
   <HeroSection></HeroSection>
  <FeatureSection></FeatureSection>
  <HowItWorks></HowItWorks>

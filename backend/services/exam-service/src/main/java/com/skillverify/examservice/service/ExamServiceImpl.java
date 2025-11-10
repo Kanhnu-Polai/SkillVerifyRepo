@@ -30,111 +30,140 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class ExamServiceImpl implements ExamService {
 
-	private final ExamRepository examRepository;
-	private final SessionServiceEnginee httpEnginee;
-	private final CloudinaryService cloudinaryService;
-	private final ApplicationServiceEnginee applicationServiceEnginee;
+    private final ExamRepository examRepository;
+    private final SessionServiceEnginee httpEnginee;
+    private final CloudinaryService cloudinaryService;
+    private final ApplicationServiceEnginee applicationServiceEnginee;
 
-	@Override
-	public ExamInitiateResDto initiateExam(ExamInitiateReqDto examInitiateReqDto, MultipartFile file) {
-		log.info("✅ Exam initiation request received for userId: {}", examInitiateReqDto.getUserId());
+    @Override
+    public ExamInitiateResDto initiateExam(ExamInitiateReqDto examInitiateReqDto, MultipartFile file) {
+        log.info("🟢 [INITIATE] Exam initiation request started | userId={}, email={}, jobId={}",
+                examInitiateReqDto.getUserId(),
+                examInitiateReqDto.getUserEmail(),
+                examInitiateReqDto.getJobId());
 
-		// Step 1: Get Application ID from Application Service
-		ResponseEntity<ApplicationServiceResponse> response = applicationServiceEnginee.getApplicationId(
-				examInitiateReqDto.getUserEmail(), examInitiateReqDto.getJobId());
+        // Step 1️⃣: Get Application ID
+        log.info("📡 [STEP 1] Fetching Application ID from Application Service...");
+        ResponseEntity<ApplicationServiceResponse> response =
+                applicationServiceEnginee.getApplicationId(examInitiateReqDto.getUserEmail(),
+                        examInitiateReqDto.getJobId());
 
-		// Step 2: Check if exam already exists for this user and application
-		Optional<Exam> existingExam = examRepository.findByUserIdAndApplicationId(
-				examInitiateReqDto.getUserId(), response.getBody().getApplicationId());
+        UUID applicationId = response.getBody().getApplicationId();
+        log.info("✅ [STEP 1] Application ID received: {}", applicationId);
 
-		// Step 3: Upload candidate image to Cloudinary
-		Map<String, String> uploadResult = null;
-		try {
-			log.info("📤 Uploading file to Cloudinary for userId: {}", examInitiateReqDto.getUserId());
-			uploadResult = cloudinaryService.uploadFile(file, "exam-uploads");
-			log.info("✅ File uploaded successfully. URL: {}", uploadResult.get("url"));
-		} catch (IOException e) {
-			log.error("❌ Failed to upload file to Cloudinary for userId: {}", examInitiateReqDto.getUserId(), e);
-		}
+        // Step 2️⃣: Check for existing exam
+        log.info("🔍 [STEP 2] Checking for existing exam for userId={} and applicationId={}",
+                examInitiateReqDto.getUserId(), applicationId);
+        Optional<Exam> existingExam = examRepository.findByUserIdAndApplicationId(
+                examInitiateReqDto.getUserId(), applicationId);
 
-		// Step 4: If existing exam found, return existing exam details
-		if (existingExam.isPresent()) {
-			log.info("⚠️ Existing exam found for userId: {} and applicationId: {}", 
-					examInitiateReqDto.getUserId(), response.getBody().getApplicationId());
+        // Step 3️⃣: Upload candidate image
+        Map<String, String> uploadResult = null;
+        try {
+            log.info("📤 [STEP 3] Uploading candidate photo to Cloudinary for userId={}",
+                    examInitiateReqDto.getUserId());
+            uploadResult = cloudinaryService.uploadFile(file, "exam-uploads");
+            log.info("✅ [STEP 3] File uploaded successfully. URL={}", uploadResult.get("url"));
+        } catch (IOException e) {
+            log.error("❌ [STEP 3] Failed to upload file to Cloudinary for userId={}", 
+                    examInitiateReqDto.getUserId(), e);
+        }
 
-			Exam existing = existingExam.get();
-			return ExamInitiateResDto.builder()
-					.examId(existing.getExamId())
-					.examStatus(existing.getExamStatus())
-					.applicationId(response.getBody().getApplicationId())
-					.userId(existing.getUserId())
-					.duration(existing.getDuration())
-					.sessionId(existing.getSessionId())
-					.build();
-		}
+        // Step 4️⃣: If exam already exists
+        if (existingExam.isPresent()) {
+            Exam existing = existingExam.get();
+            log.warn("⚠️ [STEP 4] Existing exam found for userId={} | examId={}",
+                    examInitiateReqDto.getUserId(), existing.getExamId());
 
-		// Step 5: Create new Exam record
-		log.info("🆕 No existing exam found. Creating a new exam for userId: {} and applicationId: {}",
-				examInitiateReqDto.getUserId(), response.getBody().getApplicationId());
+            SessionResponseDTO sessionData = getSessionInfo(existing, examInitiateReqDto, applicationId);
+            log.info("🆕 [STEP 4.1] New session created for existing exam | sessionId={}", sessionData.getSessionId());
 
-		Exam exam = Exam.builder()
-				.applicationId(response.getBody().getApplicationId())
-				.userId(examInitiateReqDto.getUserId())
-				.candidateImageUrl(uploadResult != null ? uploadResult.get("url") : null)
-				.createdAt(LocalDateTime.now())
-				.updatedAt(LocalDateTime.now())
-				.examStatus(ExamStatus.INITIATED)
-				.build();
+            return toExamInitiateResDto(
+                    existing,
+                    sessionData.getSessionId(),
+                    sessionData.getMobileUploadUrl(),
+                    sessionData.getDesktopUploadUrl(),
+                    sessionData.getScreenshotsUploadUrl(),
+                    uploadResult != null ? uploadResult.get("url") : null
+            );
+        }
 
-		exam = examRepository.save(exam);
-		log.info("✅ Exam initiated successfully with examId: {}", exam.getExamId());
+        // Step 5️⃣: Create new exam record
+        log.info("🧾 [STEP 5] No existing exam found. Creating a new record for userId={} and applicationId={}",
+                examInitiateReqDto.getUserId(), applicationId);
 
-		// Step 6: Create Session through Session Service
-		SessionRequest request = SessionRequest.builder()
-				.candidateId(examInitiateReqDto.getUserId())
-				.applicationId(response.getBody().getApplicationId())
-				.examId(exam.getExamId().toString())
-				.status(SessionStatusEnum.INITIATED)
-				.sessionDurationMinutes(45)
-				.build();
+        Exam exam = Exam.builder()
+                .applicationId(applicationId)
+                .userId(examInitiateReqDto.getUserId())
+                .candidateImageUrl(uploadResult != null ? uploadResult.get("url") : null)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .examStatus(ExamStatus.INITIATED)
+                .build();
 
-		ResponseEntity<SessionResponseDTO> sessionResponse = httpEnginee.getSessionInfo(request);
-		SessionResponseDTO sessionData =  sessionResponse.getBody();
-		log.info("✅ Session created successfully with sessionId: {}", sessionData.getSessionId());
+        exam = examRepository.save(exam);
+        log.info("✅ [STEP 5] Exam created successfully | examId={}", exam.getExamId());
 
-		// Step 7: Build final response
-		ExamInitiateResDto examInitiateResDto = toExamInitiateResDto(
-				exam,
-				sessionData.getSessionId(),
-				sessionData.getMobileUploadUrl(),
-				sessionData.getDesktopUploadUrl(),
-				sessionData.getScreenshotsUploadUrl(),
-				uploadResult != null ? uploadResult.get("url") : null
-		);
+        // Step 6️⃣: Create new session via Session Service
+        SessionResponseDTO sessionData = getSessionInfo(exam, examInitiateReqDto, applicationId);
+        log.info("✅ [STEP 6] Session created successfully | sessionId={}", sessionData.getSessionId());
 
-		log.info("🚀 Sending final exam initiation response for examId: {}", exam.getExamId());
-		return examInitiateResDto;
-	}
+        // Step 7️⃣: Build final response
+        ExamInitiateResDto examInitiateResDto = toExamInitiateResDto(
+                exam,
+                sessionData.getSessionId(),
+                sessionData.getMobileUploadUrl(),
+                sessionData.getDesktopUploadUrl(),
+                sessionData.getScreenshotsUploadUrl(),
+                uploadResult != null ? uploadResult.get("url") : null
+        );
 
-	private ExamInitiateResDto toExamInitiateResDto(
-			Exam exam,
-			UUID sessionId,
-			String mobileUploadUrl,
-			String desktopUploadUrl,
-			String screenshotsUploadUrl,
-			String candidateImageUrl) {
+        log.info("🚀 [STEP 7] Exam initiation completed successfully | examId={} | sessionId={}",
+                exam.getExamId(), sessionData.getSessionId());
 
-		return ExamInitiateResDto.builder()
-				.examId(exam.getExamId())
-				.examStatus(exam.getExamStatus())
-				.applicationId(exam.getApplicationId())
-				.userId(exam.getUserId())
-				.duration(exam.getDuration())
-				.sessionId(sessionId)
-				.mobileUploadUrl(mobileUploadUrl)
-				.desktopUploadUrl(desktopUploadUrl)
-				.screenshotsUploadUrl(screenshotsUploadUrl)
-				.candidateImageUrl(candidateImageUrl)
-				.build();
-	}
+        return examInitiateResDto;
+    }
+
+    private SessionResponseDTO getSessionInfo(Exam exam, ExamInitiateReqDto examInitiateReqDto, UUID applicationId) {
+        log.info("🌐 [SESSION] Creating new session for examId={} | userId={}",
+                exam.getExamId(), examInitiateReqDto.getUserId());
+
+        SessionRequest request = SessionRequest.builder()
+                .candidateId(examInitiateReqDto.getUserId())
+                .applicationId(applicationId)
+                .examId(exam.getExamId().toString())
+                .status(SessionStatusEnum.INITIATED)
+                .sessionDurationMinutes(45)
+                .build();
+
+        ResponseEntity<SessionResponseDTO> sessionResponse = httpEnginee.getSessionInfo(request);
+        SessionResponseDTO sessionData = sessionResponse.getBody();
+
+        log.info("🧩 [SESSION] SessionService responded successfully | sessionId={}", sessionData.getSessionId());
+        return sessionData;
+    }
+
+    private ExamInitiateResDto toExamInitiateResDto(
+            Exam exam,
+            UUID sessionId,
+            String mobileUploadUrl,
+            String desktopUploadUrl,
+            String screenshotsUploadUrl,
+            String candidateImageUrl) {
+
+        log.debug("🧠 [BUILD] Constructing ExamInitiateResDto for examId={} | sessionId={}", exam.getExamId(), sessionId);
+
+        return ExamInitiateResDto.builder()
+                .examId(exam.getExamId())
+                .examStatus(exam.getExamStatus())
+                .applicationId(exam.getApplicationId())
+                .userId(exam.getUserId())
+                .duration(exam.getDuration())
+                .sessionId(sessionId)
+                .mobileUploadUrl(mobileUploadUrl)
+                .desktopUploadUrl(desktopUploadUrl)
+                .screenshotsUploadUrl(screenshotsUploadUrl)
+                .candidateImageUrl(candidateImageUrl)
+                .build();
+    }
 }

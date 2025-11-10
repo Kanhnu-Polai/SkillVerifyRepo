@@ -23,7 +23,7 @@ const steps = [
 
 const HowItWorks = () => {
   return (
-    <section className="bg-white py-20 px-4 sm:px-6 lg:px-8">
+    <section className=" py-20 px-4 sm:px-6 lg:px-8">
       <motion.div
         className="max-w-4xl mx-auto text-center mb-12"
         initial={{ opacity: 0, y: 20 }}
@@ -43,7 +43,7 @@ const HowItWorks = () => {
         {steps.map((step, index) => (
           <motion.div
             key={index}
-            className="flex flex-col items-center text-center p-6 border rounded-xl shadow-md bg-white hover:shadow-xl transition"
+            className="flex flex-col items-center text-center p-6 border rounded-xl shadow-md  hover:shadow-xl transition"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 * index, duration: 0.5 }}
