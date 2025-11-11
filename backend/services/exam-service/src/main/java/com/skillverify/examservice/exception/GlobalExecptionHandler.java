@@ -31,7 +31,7 @@ public class GlobalExecptionHandler {
 
 	@ExceptionHandler(ApplicationNotFoundException.class)
 	public ResponseEntity<ErrorResponseDto> handleApplicationIdNotFoundException(ApplicationNotFoundException ex) {
-		log.warn("⚠️ Application not found: {}", ex.getMessage());
+		
 
 		ErrorResponseDto errorResponse = ErrorResponseDto.builder()
 				.errorCode(ErrorCodeEnum.APPLICATION_NOT_FOUND.getCode())
@@ -39,6 +39,17 @@ public class GlobalExecptionHandler {
 
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
 
+	}
+	
+	
+	@ExceptionHandler(ExamNotFoundException.class)
+	public ResponseEntity<ErrorResponseDto> handleExamNotFoundException(ExamNotFoundException ex){
+		
+		ErrorResponseDto errorResponse = ErrorResponseDto.builder()
+				.errorCode(ErrorCodeEnum.EXAM_NOT_FOUND.getCode())
+				.errorMessage(ErrorCodeEnum.EXAM_NOT_FOUND.getMessage())
+				.build();
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
 	}
 	
 	

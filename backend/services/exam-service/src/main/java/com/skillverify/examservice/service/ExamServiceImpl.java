@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.skillverify.examservice.constant.ErrorCodeEnum;
 import com.skillverify.examservice.constant.ExamStatus;
 import com.skillverify.examservice.constant.SessionStatusEnum;
 import com.skillverify.examservice.dto.ApplicationServiceResponse;
@@ -18,6 +19,8 @@ import com.skillverify.examservice.dto.ExamInitiateResDto;
 import com.skillverify.examservice.dto.SessionRequest;
 import com.skillverify.examservice.dto.SessionResponseDTO;
 import com.skillverify.examservice.entity.Exam;
+import com.skillverify.examservice.exception.ExamNotFoundException;
+import com.skillverify.examservice.exception.InternalServerError;
 import com.skillverify.examservice.http.ApplicationServiceEnginee;
 import com.skillverify.examservice.http.SessionServiceEnginee;
 import com.skillverify.examservice.repository.ExamRepository;
@@ -166,4 +169,39 @@ public class ExamServiceImpl implements ExamService {
                 .candidateImageUrl(candidateImageUrl)
                 .build();
     }
+
+	@Override
+	public void startExam(UUID examId) {
+		
+		log.info("✅ Rececived startExam request in service layer for examId Id : {}",examId);
+		
+		Exam existingExam = examRepository.findById(examId).orElseThrow(()->{
+		        log.info("❌ Exam not found for exam Id :{} ",examId);
+			return	new ExamNotFoundException(ErrorCodeEnum.EXAM_NOT_FOUND);
+		});
+		
+		// Make call to question-service to provide question bank 
+		UUID questionSetId = UUID.fromString("55bb4a3a-521c-4870-bb95-af1b72b2b610");
+		
+		
+		if(questionSetId ==null) {
+			log.info("❌ QestionSet Id must b null questionSetId : {} ",questionSetId);
+			throw new InternalServerError(ErrorCodeEnum.SERVER_ERROR);
+			
+		}
+		
+		if(existingExam !=null) {
+			log.info("✅ Exam Found for exam Id : {}",examId);
+			
+			existingExam.setExamStatus(ExamStatus.IN_PROGRESS);
+			examRepository.save(existingExam);
+		}
+		
+		
+		
+		
+		
+		
+		
+	}
 }

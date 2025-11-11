@@ -11,5 +11,7 @@ import com.skillverify.examservice.entity.Exam;
 public interface ExamRepository extends JpaRepository<Exam, UUID> {
 	
 	Optional<Exam> findByUserIdAndApplicationId(Long userId, UUID applicationId);
+	
+	
 
 }

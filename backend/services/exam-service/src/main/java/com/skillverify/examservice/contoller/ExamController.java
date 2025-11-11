@@ -1,5 +1,7 @@
 package com.skillverify.examservice.contoller;
 
+import java.util.UUID;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -7,6 +9,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,5 +43,15 @@ public class ExamController {
 	    ExamInitiateResDto response = examService.initiateExam(examInitiateReqDto, file);
 	    log.info("✅ Exam initiation completed for examId: {}", response.getExamId());
 	    return ResponseEntity.status(HttpStatus.CREATED).body(response);
+	}
+	
+	
+	@PostMapping("/start")
+	public String startExam( @RequestParam(required = true) UUID examId) {
+		
+		log.info("✅ Start exam request recevied for examId : {}",examId);
+		
+		examService.startExam(examId);
+		return "Exam Started....";
 	}
 }
