@@ -2,7 +2,7 @@ from pymongo import MongoClient
 from config import get_config
 from models.question_model import create_question_document
 from utility.logger import setup_logger
-import random
+
 
 
 config = get_config()

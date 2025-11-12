@@ -5,24 +5,27 @@ from utility.logger import setup_logger
 from config.local_config import BaseConfig
 
 
-from exceptions.exception_classes import OptionNotFoundException, QuestionTestNotFoundException
+from exceptions.exception_classes import OptionNotFoundException, QuestionTestNotFoundException, \
+    QuestionTypeNotMatchException, MissingAutherId
 
 logger = setup_logger(service_name=BaseConfig.SERVICE_NAME,log_level=BaseConfig.LOG_LEVEL)
 def create_question_document(data):
-    """
-    Create a standardized question document for MongoDB.
-    Includes validation, metadata normalization, and audit info.
-    """
 
     # ✅ Basic validation
     logger.info("🟡 Validating required fields before saving in db....")
+
+    if not data.get("userId"):
+        logger.warning("❌ Validation failed as question not contain any auther id / userId ")
+        raise MissingAutherId()
+
     if not data.get("questionText"):
         logger.warning("❌ Validation failed as question test filed empty...")
         raise QuestionTestNotFoundException()
 
     question_type = data.get("questionType", "MCQ").upper()
     if question_type not in ["MCQ", "CODING", "YES_NO", "DESCRIPTIVE"]:
-        raise ValueError(f"❌ Invalid questionType '{question_type}'. Allowed: MCQ, CODING, YES_NO, DESCRIPTIVE")
+        raise QuestionTypeNotMatchException(f"Invalid questionType '{question_type}'. Allowed: MCQ, CODING, YES_NO, DESCRIPTIVE")
+
 
     # ✅ Handle coding-specific data
     attachments = {}
