@@ -9,8 +9,8 @@ question_bp = Blueprint("question",__name__)
 
 @question_bp.route("/add",methods=["POST"])
 def handle_add_question():
-        logger.info("✅ Received request to add question....")
         data = request.get_json()
+        logger.info("✅ Received request to add the question :: %s",data.get("questionText"))
         result = add_question(data)
         return jsonify(result),201
 
