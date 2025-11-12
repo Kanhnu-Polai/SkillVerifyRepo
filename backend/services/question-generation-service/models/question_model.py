@@ -1,7 +1,13 @@
 from datetime import datetime
 from uuid import uuid4
 
+from utility.logger import setup_logger
+from config.local_config import BaseConfig
 
+
+from exceptions.exception_classes import OptionNotFoundException
+
+logger = setup_logger(service_name=BaseConfig.SERVICE_NAME,log_level=BaseConfig.LOG_LEVEL)
 def create_question_document(data):
     """
     Create a standardized question document for MongoDB.
@@ -9,7 +15,9 @@ def create_question_document(data):
     """
 
     # ✅ Basic validation
+    logger.info("🟡 Validating required fields before saving in db....")
     if not data.get("questionText"):
+        logger.warning("❌ Validation failed as question test filed empty...")
         raise ValueError("❌ 'questionText' is required.")
 
     question_type = data.get("questionType", "MCQ").upper()
@@ -25,7 +33,8 @@ def create_question_document(data):
 
     elif question_type == "MCQ":
         if not data.get("options"):
-            raise ValueError("❌ 'options' required for MCQ type questions.")
+            logger.warning("❌ Validation failed as options not provided for MCQ questions...")
+            raise OptionNotFoundException()
         attachments["imageUrl"] = data.get("attachments", {}).get("imageUrl")
         attachments["referenceLinks"] = data.get("attachments", {}).get("referenceLinks", [])
 

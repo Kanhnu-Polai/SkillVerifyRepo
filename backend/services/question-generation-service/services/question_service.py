@@ -13,11 +13,9 @@ collection = db[config.COLLECTION_NAME]
 
 
 def add_question(data):
-    try:
+        logger.info("✅ Inside add question service ... ")
         doc = create_question_document(data)
         collection.insert_one(doc)
         logger.info(f"✅ Added question | ID: {doc['_id']}")
         return  {"message": "Question added successfully", "id": doc["_id"]}
-    except Exception as e:
-        logger.exception("❌ Error adding question")
-        raise
+

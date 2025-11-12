@@ -9,10 +9,10 @@ question_bp = Blueprint("question",__name__)
 
 @question_bp.route("/add",methods=["POST"])
 def handle_add_question():
-    try:
+        logger.info("✅ Received request to add question....")
         data = request.get_json()
         result = add_question(data)
         return jsonify(result),201
-    except Exception as e:
-        logger.exception("❌ Failed to add question")
-        return jsonify({"error": "Internal Server Error"}), 500
+
+
+
