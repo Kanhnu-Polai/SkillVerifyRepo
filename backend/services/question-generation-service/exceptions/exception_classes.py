@@ -24,6 +24,15 @@ class OptionNotFoundException(BaseLevelException):
             HTTPStatus.BAD_REQUEST,
             custom_message)
 
+
+class QuestionTestNotFoundException(BaseLevelException):
+    def __init__(self,custom_message=None):
+
+        super().__init__(
+            ErrorCodeEnum.QUESTION_TEXT_NOT_PROVIDED,
+            HTTPStatus.BAD_REQUEST,
+            custom_message
+        )
 class InternalServerError(BaseLevelException):
     def __init__(self,custom_message=None):
         super().__init__(

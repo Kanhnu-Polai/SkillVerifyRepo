@@ -7,7 +7,7 @@ import logging
 logger = logging.getLogger("question-generator-service")
 
 def register_error_handlers(app):
-    """Register global exception handlers for Flask app."""
+
 
     @app.errorhandler(BaseLevelException)
     def handle_custom_exception(error):

@@ -5,7 +5,7 @@ from utility.logger import setup_logger
 from config.local_config import BaseConfig
 
 
-from exceptions.exception_classes import OptionNotFoundException
+from exceptions.exception_classes import OptionNotFoundException, QuestionTestNotFoundException
 
 logger = setup_logger(service_name=BaseConfig.SERVICE_NAME,log_level=BaseConfig.LOG_LEVEL)
 def create_question_document(data):
@@ -18,7 +18,7 @@ def create_question_document(data):
     logger.info("🟡 Validating required fields before saving in db....")
     if not data.get("questionText"):
         logger.warning("❌ Validation failed as question test filed empty...")
-        raise ValueError("❌ 'questionText' is required.")
+        raise QuestionTestNotFoundException()
 
     question_type = data.get("questionType", "MCQ").upper()
     if question_type not in ["MCQ", "CODING", "YES_NO", "DESCRIPTIVE"]:
