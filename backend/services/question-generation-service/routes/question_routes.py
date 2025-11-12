@@ -1,5 +1,5 @@
 from flask import Blueprint , jsonify,request
-from services.question_service import add_question
+from services.question_service import add_question , get_filtered_questions
 from utility.logger import setup_logger
 from config import get_config
 
@@ -14,5 +14,12 @@ def handle_add_question():
         result = add_question(data)
         return jsonify(result),201
 
+@question_bp.route("/get_questions",methods = ["POST"])
+def get_questions():
+        filter_info = request.get_json()
+        logger.info("✅ Getting a request to find questions for job role : %s ",filter_info.get("jobRole"))
+        questions = get_filtered_questions(filter_info)
+
+        return jsonify(questions),200
 
 

@@ -14,8 +14,8 @@ def create_question_document(data):
     # ✅ Basic validation
     logger.info("🟡 Validating required fields before saving in db....")
 
-    if not data.get("autherId"):
-        logger.warning("❌ Validation failed as question not contain any auther id / userId ")
+    if not data.get("authorId"):
+        logger.warning("❌ Validation failed as question not contain any authorId / userId ")
         raise MissingAutherId()
 
     if not data.get("questionText"):
