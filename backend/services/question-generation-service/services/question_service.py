@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 from config import get_config
+from exceptions.exception_classes import InternalServerError
 from models.question_model import create_question_document
 from utility.logger import setup_logger
 
@@ -27,7 +28,7 @@ logger = setup_logger(service_name=config.SERVICE_NAME, log_level=config.LOG_LEV
 
 def get_filtered_questions(filter_info):
 
-    logger.info("📥 Received request to fetch filtered questions")
+    logger.info("✅ Received request to fetch filtered questions")
 
     job_role = filter_info.get("jobRole")
     skills = filter_info.get("skills", [])
@@ -48,10 +49,10 @@ def get_filtered_questions(filter_info):
             ]
         }
 
-        logger.debug(f"🧮 Mongo filter generated: {mongo_filter}")
+        logger.debug(f"✅ Mongo filter generated: {mongo_filter}")
 
         raw_questions = list(collection.find(mongo_filter))
-        logger.info(f"📦 Retrieved {len(raw_questions)} raw questions from MongoDB")
+        logger.info(f"✅ Retrieved {len(raw_questions)} raw questions from MongoDB")
 
         # STEP-2 — Apply scoring logic
         scored_questions = []
@@ -79,7 +80,7 @@ def get_filtered_questions(filter_info):
             score += len(matched_tags) * 10
 
             logger.debug(
-                f"📝 Question ID={q.get('_id')} | "
+                f"✅ Question ID={q.get('_id')} | "
                 f"jobRoleMatch={metadata.get('jobRole') == job_role}, "
                 f"skillsMatched={list(matched_skills)}, "
                 f"topicMatch={q_topic in topics}, "
@@ -91,17 +92,20 @@ def get_filtered_questions(filter_info):
 
         # STEP-3 — Sort by descending score
         scored_questions.sort(key=lambda x: x[0], reverse=True)
-        logger.info("📊 Sorted questions based on relevance score")
+        logger.info("✅ Sorted questions based on relevance score")
 
         # STEP-4 — Pick top N (only positive scoring)
         final_questions = [q for score, q in scored_questions if score > 0][:limit]
-        logger.info(f"🎯 Returning top {len(final_questions)} questions (limit={limit})")
+        logger.info(f"✅ Returning top {len(final_questions)} questions (limit={limit})")
+        if len(final_questions) < limit:
+            remainingQuestions = limit-len(final_questions)
+            # call to ai-question-generation-service by providing the job details to send the remaining questions
 
         return final_questions
 
     except Exception as e:
         logger.exception("💥 Failed to filter questions due to unexpected error")
-        raise
+        raise InternalServerError("Failed to filter questions due to unexpected error")
 
 
 
