@@ -23,5 +23,13 @@ def create_app():
 if __name__ == "__main__":
     app = create_app()
     logger.info(f"🚀 Starting {config.SERVICE_NAME} in {config.__class__.__name__}")
-    app.run(host="0.0.0.0", port=5002, debug=config.DEBUG and False)
+    HOST = "0.0.0.0"
+    PORT = 5002
+    PREFIX = "/api/v1/questions"
+
+    base_url = f"http://{HOST}:{PORT}{PREFIX}"
+    logger.info("Base URL: %s", base_url)
+
+    app.run(host=HOST, port=PORT, debug=config.DEBUG and False)
+
 
