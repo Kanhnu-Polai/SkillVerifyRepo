@@ -75,7 +75,7 @@ export default function ResumeManager() {
           {resumes.map((resume) => (
             <div
               key={resume.resumePublicId}
-              className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+              className="bg-white border border-green-300 rounded-xl p-4 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
             >
               <div className="flex justify-start items-center space-x-3">
                 <span className="text-6xl text-blue-500 font-extralight">
@@ -89,13 +89,13 @@ export default function ResumeManager() {
               <div className="flex justify-end space-x-2 items-center mt-4">
                 <button
                   onClick={() => openViewModal(resume)}
-                  className="px-3 py-1.5 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition-all w-20"
+                  className="px-3 py-1.5 border-blue-500 border  text-slate-700 text-sm rounded-md hover:bg-blue-200 cursor-pointer transition-all w-20"
                 >
                   View
                 </button>
                 <button
                   onClick={() => openConfirmation(resume.resumePublicId)}
-                  className="px-3 py-1.5 bg-red-500 text-white text-sm rounded-md hover:bg-red-600 transition-all w-20"
+                  className="px-3 py-1.5 border border-red-500 text-slate-700 text-sm rounded-md hover:bg-red-600 transition-all w-20"
                 >
                   Remove
                 </button>

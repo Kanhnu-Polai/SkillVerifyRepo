@@ -8,7 +8,7 @@ const Readmore = ({ text, limit = 200 }) => {
   // Handle short text
   if (text.length <= limit) {
     return (
-      <p className="text-[14px] md:text-[17px] text-gray-700 font-serif whitespace-pre-line">
+      <p className="text-[14px] md:text-[17px] text-gray-300 font-sans whitespace-pre-line">
         {text}
       </p>
     );
@@ -19,7 +19,7 @@ const Readmore = ({ text, limit = 200 }) => {
 
   return (
     <div className="transition-all duration-500 ease-in-out">
-      <p className="text-[14px] md:text-[17px] text-gray-300 font-sans whitespace-pre-line">
+      <p className="text-[14px] md:text-[17px] text-gray-300 font-sans whitespace-pre-line leading-relaxed">
         {displayText}
       </p>
 

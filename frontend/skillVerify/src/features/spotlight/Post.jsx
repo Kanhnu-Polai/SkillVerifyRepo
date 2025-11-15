@@ -114,28 +114,28 @@ const Post = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-2 sm:px-4">
+    <div className="max-w-4xl mx-auto md:px-2  ">
       {posts.map((post) => (
         <div
           key={post.postId}
-          className="bg-white dark:bg-gray-900 shadow-lg rounded-lg overflow-hidden my-4 border-4 dark:border-gray-700 transition-colors"
+          className="bg-white dark:bg-gray-900 shadow-lg rounded-lg overflow-hidden my-4  border  transition-colors"
         >
           {/* --- Header --- */}
           <div className="px-4 sm:px-6 py-4 border-b dark:border-gray-700">
             <div className="flex justify-between items-center mb-2">
               {/* User Info */}
               <div
-                className="flex items-center gap-2 cursor-pointer"
+                className="flex items-center gap-2 cursor-pointer "
                 onClick={() => handleUserClick(post.userId)}
               >
                 <img
                   src={post.userPhotoUrl}
                   alt={post.userName}
-                  className="w-10 h-10 rounded-full border dark:border-gray-600"
+                  className="w-10 h-10  rounded-full p-0.5 object-cover border dark:border-gray-600"
                 />
                 <div>
-                  <p className="text-sm font-light text-gray-900 dark:text-gray-100">
-                    {post.userName}
+                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                    {post.userName!=null?post.userName:"Kanhu Polai"}
                   </p>
                   <p className="text-[10px] text-gray-500 dark:text-gray-400">
                     {new Date(post.createdAt).toDateString()} · {post.category}

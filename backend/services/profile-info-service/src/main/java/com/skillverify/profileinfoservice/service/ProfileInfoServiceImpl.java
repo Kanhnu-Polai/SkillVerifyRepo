@@ -1,6 +1,7 @@
 package com.skillverify.profileinfoservice.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -52,35 +53,46 @@ public class ProfileInfoServiceImpl implements ProfileInfoService {
 		
 	}
 
+	
 	@Override
 	public ProfileInfo addProfileView(Long userId, ProfileViewDto profileViewDto) {
-		log.info("Inside addProfileView of ProfileInfoServiceImpl");
-		// Fetch the profile info for the given userId
-		ProfileInfo profileInfo = profileInfoRepository.findByUserId(userId);
-		
-		
-		ResponseEntity<String> data =   	httpServiceEngine.callToUserServiceToUpdateProfileView(userId);
-		log.info("Response from User Service: {}", data.getBody());
-		
-		if (profileInfo == null) {
-	        throw new RuntimeException("Profile not found for userId: " + userId);
+	    log.info("Inside addProfileView of ProfileInfoServiceImpl");
+
+	    // 1️⃣ Try fetching profile
+	    ProfileInfo profileInfo = profileInfoRepository.findByUserId(userId);
+
+	    // 2️⃣ Create profile automatically if not exists
+	    if (profileInfo == null) {
+	        log.warn("Profile not found for userId: {}. Creating a fresh profile...", userId);
+
+	        profileInfo = ProfileInfo.builder()
+	                .userId(userId)
+	                .profileViews(new ArrayList<>())  // very important
+	                .build();
+
+	        profileInfo = profileInfoRepository.save(profileInfo);
 	    }
 
-		// Create a new ProfileView entity from the DTO
-		ProfileView view = ProfileView.builder()
+	    // 3️⃣ Call User-Service to update global profile view count
+	    ResponseEntity<String> data =
+	            httpServiceEngine.callToUserServiceToUpdateProfileView(userId);
+
+	    log.info("Response from User Service: {}", data.getBody());
+
+	    // 4️⃣ Add the view entry
+	    ProfileView view = ProfileView.builder()
 	            .viewerName(profileViewDto.getViewerName())
 	            .viewerUserId(profileViewDto.getViewerUserId())
 	            .viewerPhotoUrl(profileViewDto.getViewerPhotoUrl())
 	            .viewedAt(LocalDateTime.now())
 	            .profileInfo(profileInfo)
 	            .build();
-		
-		// Add the new view to the profile's list of views
-		profileInfo.getProfileViews().add(view);
-	
-		return profileInfoRepository.save(profileInfo);
+
+	    profileInfo.getProfileViews().add(view);
+
+	    // 5️⃣ Save and return
+	    return profileInfoRepository.save(profileInfo);
 	}
-	
 	
 	
 
