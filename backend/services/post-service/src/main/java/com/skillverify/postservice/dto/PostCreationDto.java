@@ -35,8 +35,8 @@ public class PostCreationDto {
 	private String description;
 
 	private String imageUrl;
-	@NotBlank(message = "Category cannot be blank")
-	private String category;
+
+	private List<String> category;
 	
 	@NotBlank(message = "Status cannot be blank")
 	private String status; 

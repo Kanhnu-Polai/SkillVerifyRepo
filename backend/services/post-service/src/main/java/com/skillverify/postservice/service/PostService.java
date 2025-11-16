@@ -14,6 +14,7 @@ public interface PostService {
 	public ResponseEntity<Post> updateLikeCount(  UUID postId, Boolean isLiked);
 	public Post updateCommentCount( UUID postId);
 	public List<Post> getCurrentUserPosts(Long userId);
+	public List<Post> getPostByCategory(String category);
 	
 
 }

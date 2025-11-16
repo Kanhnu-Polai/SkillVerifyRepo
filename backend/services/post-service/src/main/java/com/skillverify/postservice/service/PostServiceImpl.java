@@ -136,4 +136,11 @@ public class PostServiceImpl implements PostService {
 		return userPosts;
 	}
 
+	@Override
+	public List<Post> getPostByCategory(String category) {
+		log.info("PostService ----->getPostByCategory() callled ... for category : {} ",category);
+		List<Post> posts = repository.findPostsByCategory(category);
+		return posts;
+	}
+
 }

@@ -18,6 +18,10 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
 		List<Post> findTrendingPosts(@Param("since") LocalDateTime since);
 	
 	
+	@Query("SELECT p FROM Post p JOIN p.category c WHERE LOWER(c) = LOWER(:category)")
+	List<Post> findPostsByCategory(@Param("category") String category);
+	
+	
 	List<Post> findByUserIdOrderByCreatedAtDesc(Long userId);
 
 

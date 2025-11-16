@@ -31,7 +31,8 @@ public class Post {
 
     private String imageUrl;
 
-    private String category;
+    @ElementCollection
+    private List<String> category;
 
     private LocalDateTime createdAt;
 
