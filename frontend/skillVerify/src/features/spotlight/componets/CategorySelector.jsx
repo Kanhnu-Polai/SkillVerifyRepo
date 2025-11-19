@@ -53,25 +53,32 @@ const options = [
   { value: "Blockchain", label: "Blockchain" },
   { value: "Space Exploration", label: "Space Exploration" },
   { value: "Robotics", label: "Robotics" },
-  { value: "Psychology", label: "Psychology" },
+  { value: "Psychology", label: "Psychology" }
 ];
 
-export const CategorySelector = ({ value, onChange }) => {
-  const handleChange = (selectedOption) => {
-    onChange(selectedOption ? selectedOption.value : "");
-  };
+export const CategorySelector = ({ value = [], onChange }) => {
 
-  const selectedOption = options.find((opt) => opt.value === value) || null;
+  // Convert value array → react-select expects array of objects
+  const selectedOptions = options.filter(opt => value.includes(opt.value));
+
+  const handleChange = (selected) => {
+    // selected is array of objects → extract "value" only
+    const values = selected ? selected.map((opt) => opt.value) : [];
+    onChange(values);
+  };
 
   return (
     <div className="rounded-md p-1">
       <Select
+        isMulti
         options={options}
-        value={selectedOption}
+        value={selectedOptions}
         onChange={handleChange}
-        placeholder="Select a category..."
-        isClearable
-        closeMenuOnSelect={true}
+        placeholder="Select categories..."
+        className="basic-multi-select"
+        classNamePrefix="select"
+        closeMenuOnSelect={false}
+        hideSelectedOptions={false}
       />
     </div>
   );

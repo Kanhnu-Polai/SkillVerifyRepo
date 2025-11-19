@@ -9,6 +9,10 @@ import { timeAgo }     from "../utils/time";
 import { toast }       from "react-hot-toast";     // ensure react-hot-toast is installed
 import JobFilter from "../features/job/jobFilter/JobFilter";
 import { useNavigate } from "react-router-dom";
+import JobCardSkeleton from "../features/job/jobFilter/JobCardSkeleton";
+import BottomNav from "../components/home/ButtomNav";
+import JobFilterTab from "../features/job/jobFilter/JobFilterTab";
+import FilterModal from "../features/job/componets/mobileComponets/FilterModal";
 
 
 export default function JobsPage() {
@@ -18,6 +22,7 @@ export default function JobsPage() {
   const [applyJob, setApplyJob]  = useState(null);      // full job object for résumé modal
   const [loading, setLoading]    = useState(true);
   const [error, setError]        = useState("");
+  const[openMobileFilter,setOpenMobileFilter] =useState(false)
 
   const navigate = useNavigate();
 
@@ -44,9 +49,13 @@ export default function JobsPage() {
   /* --------- loading / error UI --------- */
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <p className="text-gray-500">Loading jobs…</p>
+      <div className="min-h-screen bg-gray-50 px-4 sm:px-6 lg:px-8 mt-6">
+      <div className="flex flex-col gap-8 max-w-7xl mx-auto">
+        <JobCardSkeleton />
+        <JobCardSkeleton />
+        <JobCardSkeleton />
       </div>
+    </div>
     );
   }
 
@@ -117,12 +126,13 @@ export default function JobsPage() {
      <div className="mb-18">
        <Footer />
      </div>
-      <div className="fixed md:hidden bottom-0 left-0 w-full backdrop-blur-md border-t border-gray-200 justify-between flex md:justify-end items-center py-3 px-4 z-10 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] space-x-2.5">
-              {/* Save Button */}
-              
+     {
+      openMobileFilter && <FilterModal onClose = {setOpenMobileFilter} />
+     }
+    
       
-               <JobFilter/>
-            </div>
+
+            <JobFilterTab setOpenMobileFilter = {setOpenMobileFilter}/>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import logo from "/src/assets/cr.png";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/slices/authSlice";
@@ -36,20 +37,23 @@ const Navbar = () => {
   return (
     <nav className="bg-white shadow-xl sticky top-0 z-30 ">
       <div className="w-full">
-        <div className="flex justify-between mx-2 text-[15px] md:mx-4  items-center h-18 py-2">
+        <div className="flex justify-between mx-2 text-[15px] md:mx-4  items-center h-[68px] py-2">
           {/* Logo */}
+          
           <div className="flex items-center gap-2">
-            <FaShieldAlt className="text-blue-950 w-7 h-7 md:w-12 md:h-12" />
+          
+            <img src={logo} className="md:w-12 md:h-12 w-10 h-10" alt="" />
+           
             <div className="md:ml-1 ">
               <NavLink to="/" className="flex items-center gap-1">
-                <span className="text-lg md:text-2xl antialiased font-extrabold  text-blue-600 hover:text-purple-600 tracking-tight">
-                  <span className="text-blue-500"><span className=" text-blue-700 text-2xl md:text-4xl">S</span>KILL<span className="md:text-4xl text-2xl text-blue-700">V</span>ERIFY</span>
+                <span className="text-lg md:text-2xl antialiased font-extrabold  text-blue-600 hover:text-purple-600 tracking-tight leading-none">
+                  SKILLVERIFY
                 </span>
                 <sup className="text-[6px] md:text-[10px] text-indigo-900 font-bold antialiased ">
                   v.0.0.1
                 </sup>
               </NavLink>
-              <p className="text-[8px] md:text-xs text-gray-500 tracking-wider">
+              <p className="text-[8px] md:text-xs text-gray-500 tracking-wide">
                 Verified Skills. Trusted Hiring.
               </p>
             </div>

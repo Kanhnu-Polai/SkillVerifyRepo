@@ -10,6 +10,7 @@ import SkillAssessments from '../components/home/SkillAssessments'
 
 import Testimonials from '../components/home/Testimonials'
 import CallToAction from '../components/home/CallToAction'
+import ButtomNav from '../components/home/ButtomNav'
 
 const Homepage = () => {
   return <>
@@ -25,6 +26,7 @@ const Homepage = () => {
  
   <About></About>
   <Footer></Footer>
+  <ButtomNav/>
   </div>
   </>
 }

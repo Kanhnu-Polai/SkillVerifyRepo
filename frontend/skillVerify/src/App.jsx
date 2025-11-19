@@ -24,96 +24,78 @@ import GovtJobDetails from './features/govt/GovtJobDetails';
 import JobInfoPage from './pages/JobInfoPage';
 import ExamPage from './examSystem/pages/ExamPage';
 
-
-
-
 const App = () => {
   const dispatch = useDispatch();
 
-  const { isAuthChecked, user } = useSelector((state) => state.auth);      // auth slice
+  const { isAuthChecked, user } = useSelector((state) => state.auth);
   const { loading: userDataLoading } = useSelector((state) => state.userData);
-  const location  = useLocation()
+  const location = useLocation();
   const isForgotPasswordOpen = useSelector(
     (state) => state.modal.isForgotPasswordModalOpen
   );
 
-  /* ------------------------------------------------------------------
-     1️⃣   Restore token & basic user object from localStorage
-  ------------------------------------------------------------------ */
+  /* ---------------------------------------------------------
+     1️⃣ Restore token & user from localStorage
+  ---------------------------------------------------------- */
   useEffect(() => {
     const token = localStorage.getItem('token');
     const storedUser = localStorage.getItem('user');
-  
-
 
     if (token && storedUser) {
       dispatch(login({ token, user: JSON.parse(storedUser) }));
     } else {
-      dispatch(setAuthChecked());                  // Mark auth check done (unauth)
+      dispatch(setAuthChecked());
     }
   }, [dispatch]);
 
-  /* ------------------------------------------------------------------
-     2️⃣   After auth is ready *and* we have an email, hydrate userData
-  ------------------------------------------------------------------ */
+  /* ---------------------------------------------------------
+     2️⃣ Fetch user profile & jobs after auth ready
+  ---------------------------------------------------------- */
   useEffect(() => {
     if (isAuthChecked && user?.email) {
       dispatch(fetchUserData(user.email));
-      dispatch(fetchJobsByPosterEmail(user.email))
+      dispatch(fetchJobsByPosterEmail(user.email));
     }
   }, [dispatch, isAuthChecked, user?.email]);
 
-  /* ------------------------------------------------------------------
-     3️⃣   Show splash screen until both auth & userData finished
-  ------------------------------------------------------------------ */
+  /* ---------------------------------------------------------
+     3️⃣ Show SplashScreen ONLY while loading
+  ---------------------------------------------------------- */
   if (!isAuthChecked || userDataLoading) {
-    return (
-      
-      <div className="text-center mt-20 text-lg">
-        {userDataLoading ? 'Loading profile…' : 'Checking authentication…'}
-      </div>
-    );
+    return <SplashScreen />;
   }
 
-  /* ------------------------------------------------------------------
-     4️⃣   Main app routes
-  ------------------------------------------------------------------ */
+  /* ---------------------------------------------------------
+     4️⃣ Actual App UI
+  ---------------------------------------------------------- */
   return (
     <>
-    <SplashScreen/>
       <Toaster position="top-center" />
+
+      {/* Navbar should NOT hide during /exam */}
       {location.pathname !== "/exam" && <Navbar />}
 
       {isForgotPasswordOpen && <ForgotPasswordModal />}
 
       <Routes>
         <Route path="/"        element={<Homepage />} />
-        <Route path='/jobs' element = {<JobsPage></JobsPage>}/>
-        <Route path='/govt-jobs' element={<GovtJobs/>}/>
-        <Route path="/login"   element={<LoginModal />} />
-        <Route path='/spotlight' element={<Spotlight></Spotlight>}></Route>
-        <Route path="/signup"  element={<Signup />} />
-        <Route path='/govt-job-details' element = {<GovtJobDetails/>}/>
-        <Route path='/job-info' element = {<JobInfoPage/>} />
-       
-        
-       
+        <Route path="/jobs"     element={<JobsPage />} />
+        <Route path="/govt-jobs" element={<GovtJobs/>} />
+        <Route path="/login"    element={<LoginModal />} />
+        <Route path="/spotlight" element={<Spotlight />} />
+        <Route path="/signup"   element={<Signup />} />
+        <Route path="/govt-job-details" element={<GovtJobDetails />} />
+        <Route path="/job-info" element={<JobInfoPage />} />
 
-        {
-          localStorage.getItem("role") && 
-           <Route path='/exam' element = {<ExamPage/>} />
+        {/* exam route visible only if role exists */}
+        {localStorage.getItem("role") && (
+          <Route path="/exam" element={<ExamPage />} />
+        )}
 
-        }
-    
-
-        {/* ✅ Protected Routes */}
+        {/* Protected Routes */}
         <Route element={<PrivateRoute />}>
           <Route path="/profile/*" element={<ProfilePage />} />
-          {/* <Route  path="/profile/*" element = {<ProfileLayout></ProfileLayout>} ></Route> */}
-          <Route path='/create_job' element={<CreateJobPage></CreateJobPage>}></Route>
-         
-         
-
+          <Route path="/create_job" element={<CreateJobPage />} />
         </Route>
       </Routes>
     </>

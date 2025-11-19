@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function CategoryGrid({setActiveTopic,setActiveTab}) {
+export default function CategoryGrid({setActiveTopic,setActiveTab,setCategoryManager}) {
   const categories = [
   { title: "Trending", color: "bg-gradient-to-r from-blue-400 to-blue-600",image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFVLln4gMwhH3tKKmmUojPztweVD4CoyyJAg&s" },
   { title: "Technology", color: "bg-gradient-to-r from-green-400 to-green-600",image:"https://t4.ftcdn.net/jpg/03/02/39/97/360_F_302399784_k69fNY2NhbWLYf3Xg4fUz50docoFAwjk.jpg" },
@@ -26,6 +26,7 @@ const handleCategoryClick= (category)=>{
     console.log(category)
     setActiveTopic(category)
     setActiveTab(category)
+    setCategoryManager(true)
 }
 
   return (

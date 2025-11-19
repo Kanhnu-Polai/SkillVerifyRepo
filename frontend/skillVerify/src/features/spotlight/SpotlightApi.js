@@ -45,6 +45,23 @@ export async function getTrendingPost() {
 
 }
 
+export async function getByCategory(category) {
+  try {
+    const res = await axios.get(`${POST_BASE_URL}/by`, {
+      params: {
+        category: category   // RequestParam
+      }
+    });
+
+    console.log("Fetched posts:", res.data);
+    return res.data;
+
+  } catch (error) {
+    console.log("Error fetching posts by category");
+    throw error;
+  }
+}
+
 export async function updateLike(userId, postId, isLiked) {
   try {
     const res = await axios.post(`${LIKE_BASE_URL}/update-like`, {
